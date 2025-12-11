@@ -1,0 +1,117 @@
+.pageWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+.section {
+    display: flex;
+    gap: 12px;
+}
+
+.buttonPrimary {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #1677ff;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.buttonPrimary:hover {
+    background: #3b89ff;
+}
+
+.dangerZone {
+    background: rgba(255, 77, 79, 0.06);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dangerHeader h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #ff4d4f;
+}
+
+.dangerHeader p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #8a8f98;
+}
+
+.dangerActions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.buttonDanger {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #ff4d4f;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.buttonDanger:hover {
+    background: #ff6b6d;
+}
+
+.buttonOutlineDanger {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1.5px solid #ff4d4f;
+    background: transparent;
+    color: #ff4d4f;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.buttonOutlineDanger:hover {
+    background: rgba(255, 77, 79, 0.12);
+}
+
+.profileCard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.profileTitle {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.profileRow {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.profileLabel {
+    width: 140px;
+    color: #8a8f98;
+    font-size: 14px;
+}
+
+.profileValue {
+    color: #ffffff;
+    font-size: 14px;
+    word-break: break-all;
+}

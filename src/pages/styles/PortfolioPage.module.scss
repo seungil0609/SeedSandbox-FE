@@ -1,0 +1,170 @@
+@use '../../styles/title.scss';
+@use '../../styles/wrappers.scss';
+@mixin svg {
+    vertical-align: middle;
+    width: 1.1em;
+    height: 1.1em;
+    align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+thead {
+    background-color: transparent;
+}
+
+tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background-color: #1b2d45;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.createButton {
+    display: flex;
+    flex-direction: row;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.55);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all ease 0.4s;
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+        background-color: #00bfff;
+    }
+}
+
+.actionButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    gap: 0.5rem;
+
+    background-color: rgba(192, 37, 37, 0.08);
+    color: #c02525;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    transition: all ease 0.2s;
+
+    &:hover {
+        background-color: #c02525;
+        color: #fff;
+        border-color: #c02525;
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(192, 37, 37, 0.35);
+    }
+
+    &:active {
+        transform: translateY(1px);
+        filter: brightness(0.95);
+    }
+}
+
+.dropDown {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background: transparent;
+        top: 100%;
+        right: 2rem;
+        border-radius: 8px;
+    }
+
+    &__button {
+        min-width: 210px;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border: none;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.18);
+        transition: all ease 0.4s;
+
+        &:hover {
+            background: #00bfff;
+        }
+    }
+}
+
+.dropDownIcon {
+    @include svg;
+    line-height: 1;
+    transition: all ease 0.4s;
+    .dropDown:hover & {
+        transform: scale(1.3);
+    }
+}
+
+.actionLogo {
+    @include svg;
+    line-height: 1;
+    transition: all ease 0.2s;
+    color: inherit;
+
+    .actionButton:hover & {
+        color: #fff;
+        transform: scale(1.1);
+    }
+}
+
+.delete {
+    color: #c02525;
+    background: rgba(255, 0, 0, 0.08);
+    transition: all ease 0.4s;
+
+    &:hover {
+        background: #c02525;
+        color: #fff;
+    }
+}
+
+.profit {
+    color: #218838;
+}
+
+.loss {
+    color: #c02525;
+}

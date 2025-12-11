@@ -1,0 +1,122 @@
+@use '../../styles/title.scss';
+@use '../../styles/wrappers.scss';
+
+// 페이지 래퍼 및 헤더
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.writeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+        border-color: #00bfff;
+        background: #00bfff;
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(0, 191, 255, 0.15);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
+    }
+
+    &:active {
+        transform: translateY(0);
+        filter: brightness(0.95);
+    }
+}
+
+.cardList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    max-height: 200px;
+    align-items: flex-start;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+        border-color: #00bfff;
+        box-shadow: 0 6px 18px rgba(0, 191, 255, 0.15);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
+    }
+}
+
+.cardHeader {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.cardBoardType {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 0.15rem 0.5rem;
+    font-weight: 600;
+}
+
+.cardDate {
+    font-variant-numeric: tabular-nums;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0.25rem 0 0.5rem;
+}
+
+.cardMeta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 0.5rem;
+}
+
+.cardAuthor {
+    font-weight: 600;
+}
+
+.cardContent {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    display: -webkit-box;
+}
