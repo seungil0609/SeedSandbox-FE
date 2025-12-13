@@ -1,121 +1,268 @@
-@use '../../styles/title.scss';
-@use '../../styles/wrappers.scss';
-@use '../../styles/card.scss';
-.testButton {
-    height: 2rem;
-    width: 5rem;
-}
-.summaryRail {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    column-gap: 2rem;
+/* src/pages/styles/DashboardPage.module.scss */
+
+.pageWrapper {
+  padding: 2rem;
+  background-color: #111;
+  min-height: 100vh;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
 }
 
-.columnWrapper {
+.header .title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* 1. Filter Bar */
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* 상단 정렬 */
+  background-color: #1e1e1e;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  flex-wrap: wrap; /* 버튼 많으면 줄바꿈 */
+  gap: 1rem;
+
+  &__group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* 내부 버튼들도 줄바꿈 */
+  }
+
+  &__label {
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    white-space: nowrap; /* 라벨은 줄바꿈 안 함 */
+  }
+}
+
+/* 2. KPI Strip */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+
+  /* 화면이 좁아지면 4개 -> 2개 -> 1개로 변환 */
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpiCard {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-left: 4px solid transparent;
+  min-width: 0; /* Flexbox 내부 넘침 방지 */
+
+  &.positive {
+    border-left-color: #00ff88;
+  }
+  &.negative {
+    border-left-color: #ff4d4d;
+  }
+  &.neutral {
+    border-left-color: #555;
+  }
+
+  &__label {
+    font-size: 0.85rem;
+    color: #aaa;
+  }
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    word-break: break-all;
+  }
+  &__sub {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+/* 3. AI Insight Banner */
+.aiBanner {
+  display: flex;
+  align-items: flex-start; /* 텍스트 많을 때 위쪽 정렬 */
+  background: linear-gradient(
+    90deg,
+    rgba(0, 191, 255, 0.1) 0%,
+    rgba(30, 30, 30, 0.5) 100%
+  );
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  gap: 1rem;
+
+  &__icon {
+    margin-top: 4px; /* 아이콘 위치 보정 */
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    border-radius: 50%;
+    flex-shrink: 0; /* 아이콘 찌그러짐 방지 */
+  }
+
+  &__text {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
-    border: 1px solid rgba(168, 156, 156, 0.15);
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-}
+    gap: 6px;
+    min-width: 0; /* 텍스트 넘침 방지 */
+  }
 
-.chartWrapper {
-    &__line {
-        display: grid;
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #00bfff;
+  }
 
-        height: 700px;
+  &__desc {
+    font-size: 0.95rem;
+    color: #ddd;
+    line-height: 1.5;
+    /* ✅ 줄바꿈 허용으로 수정 */
+    white-space: normal;
+
+    strong {
+      color: #fff;
+      font-weight: 700;
     }
-    &__matrix {
-        display: grid;
-        height: 500px;
-    }
-}
-.pageWrapper {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    row-gap: 2rem;
-}
-.gridWrapper {
-    display: grid;
-    column-gap: 2rem;
-    grid-template-columns: repeat(2, 1fr);
-}
-.riskSummaryGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 2rem;
-    row-gap: 2rem;
+  }
 }
 
-.profit {
-    color: #218838;
+/* 4. Main Chart */
+.mainChartSection {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    font-size: 1.1rem;
+    color: #eee;
+    margin-bottom: 1rem;
+  }
 }
 
-.loss {
-    color: #c02525;
+/* 5. Bottom Analysis */
+.analysisGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr; /* 모바일은 세로로 */
+  }
 }
 
-.buttonRail {
+.sectionTitle {
+  font-size: 1.1rem;
+  color: #eee;
+  margin-bottom: 1rem;
+}
+
+/* 리스크 그리드 */
+.riskGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.riskCard {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.2rem;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+
+  /* 내용물 넘침 방지 */
+  overflow: hidden;
+
+  &__header {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    h4 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+    span {
+      font-size: 0.7rem;
+      color: #777;
+    }
+  }
+}
+
+/* 매트릭스 */
+.matrixCard {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1rem;
+  height: 340px; /* 리스크 카드 2개 높이 합과 비슷하게 */
+}
+
+/* 유틸리티 */
+.buttonRail {
+  display: flex;
+  background: #111;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 4px;
+  flex-wrap: wrap; /* 버튼 많으면 줄바꿈 */
 }
 
 .button {
-    display: flex;
-    flex-direction: row;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.55);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all ease 0.4s;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #777;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
 
-    &:hover {
-        color: white;
-        background-color: #00bfff;
-    }
-}
-
-.active {
+  &.active {
     background: #00bfff;
-    color: #ffffff;
-    border-color: #00bfff;
-    box-shadow: 0 2px 8px rgba(0, 191, 255, 0.35);
-
-    &:hover {
-        filter: brightness(0.95);
-    }
+    color: #fff;
+  }
+  &:hover:not(.active) {
+    color: #fff;
+  }
 }
 
-.aiReview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 16px;
-    overflow-y: scroll;
+.profit {
+  color: #00ff88;
+}
+.loss {
+  color: #ff4d4d;
+}
 
-    &__header {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 700;
-        color: #8a8f98;
-        letter-spacing: 0.2px;
-    }
-
-    &__content {
-        margin: 0;
-        white-space: pre-wrap;
-        color: #ffffff;
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
+.chartContainer {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 100px; /* 차트 최소 높이 확보 */
 }
