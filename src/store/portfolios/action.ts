@@ -107,14 +107,32 @@ export const deleteCurrentPortfolioAtom = atom(null, async (get, set) => {
     const token = get(idTokenAtom);
     const portfolioId = get(selectedPortfolioIdAtom);
 
-    if (!portfolioId) return; // ID 없으면 중단
+    if (!portfolioId) return;
 
+    // 1. 서버 삭제 요청
     await axios.delete(`${SERVER_IP}/api/portfolios/${portfolioId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // 목록 다시 불러오기 (위에서 만든 안전장치 로직이 자동으로 다음 ID를 선택해줌)
+    // 2. 전체 목록 다시 불러오기
     await set(getAllPortfoliosAtom);
+
+    // 3. 갱신된 목록 확인
+    const portfolios = get(allPortfolios);
+
+    if (Array.isArray(portfolios) && portfolios.length > 0) {
+      // 남은 게 있으면 첫 번째 녀석으로 갈아타기
+      const nextId = portfolios[0]._id;
+      set(selectedPortfolioIdAtom, nextId);
+
+      // ⭐️ 중요: 갈아탄 녀석의 데이터를 즉시 로드해야 함!
+      await set(getPortfolioItemsByIdAtom, nextId);
+    } else {
+      // 남은 게 없으면 싹 비우기 (초기화)
+      set(selectedPortfolioIdAtom, null);
+      set(portfolioItems, []); // ⭐️ 화면에 남은 주식 목록 제거
+      set(selectedPortfolio, null); // ⭐️ 상단 타이틀 제거
+    }
   } catch (error) {
     console.error("포트폴리오 삭제 실패: ", error);
     throw new Error();
