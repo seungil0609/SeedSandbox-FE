@@ -5,8 +5,8 @@ import {
   deleteTransactionByIdAtom,
   getAllTransactionAtom,
 } from "../store/transaction/action";
-import { useEffect, useState } from "react";
-import { Trash, Plus } from "lucide-react"; // 🟢 Plus 아이콘
+import { useEffect, useState, useMemo } from "react";
+import { Trash, Plus } from "lucide-react";
 import TransactionCreateModal from "../widgets/TransactionCreateModal";
 import modalStyle from "../widgets/styles/TransactionCreateModal.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,28 @@ import {
   selectedPortfolioIdAtom,
 } from "../store/portfolios/atoms";
 import { setCurrentPortfolioAtom } from "../store/portfolios/action";
+
+const EXCHANGE_RATE = 1450;
+
+const formatMoney = (value: number, currency: string) => {
+  const symbol =
+    currency === "KRW"
+      ? "₩"
+      : currency === "USD"
+      ? "$"
+      : currency === "JPY"
+      ? "¥"
+      : currency === "EUR"
+      ? "€"
+      : "";
+
+  const options =
+    currency === "KRW"
+      ? { maximumFractionDigits: 0 }
+      : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+
+  return `${symbol} ${value.toLocaleString(undefined, options)}`;
+};
 
 function TransactionPage() {
   const [transactionData] = useAtom(AllTransactionAtom);
@@ -43,24 +65,33 @@ function TransactionPage() {
     }
   };
 
-  // 🟢 [추가] 사이드바의 + 버튼 클릭 시 해당 포트폴리오 선택 후 모달 오픈
   const handleAddTransaction = (e: React.MouseEvent, portfolioId: string) => {
-    e.stopPropagation(); // 부모(포트폴리오 선택) 클릭 방지
-    setCurrentPortfolio(portfolioId); // 해당 포트폴리오 선택
-    setToggleTransactionCreateModal(true); // 모달 열기
+    e.stopPropagation();
+    setCurrentPortfolio(portfolioId);
+    setToggleTransactionCreateModal(true);
   };
 
-  // 현재 선택된 포트폴리오 이름
-  const currentPortfolioName =
-    portfolios.find((p) => p._id === selectedPortfolioId)?.name || "";
+  const currentPortfolioObj = portfolios.find(
+    (p) => p._id === selectedPortfolioId
+  );
+  const currentPortfolioName = currentPortfolioObj?.name || "";
+  const baseCurrency = currentPortfolioObj?.baseCurrency || "USD";
+
+  const sortedTransactions = useMemo(() => {
+    if (!transactionData) return [];
+    return [...transactionData].sort((a, b) => {
+      return (
+        new Date(b.transactionDate).getTime() -
+        new Date(a.transactionDate).getTime()
+      );
+    });
+  }, [transactionData]);
 
   return (
     <div className={style.pageWrapper}>
       <div className={style.header}>
-        {/* 타이틀 */}
         <div className={style.title}>거래내역</div>
 
-        {/* 우측 상단 버튼 레일 */}
         <div className={style.buttonRail}>
           <button
             className={style.createButton}
@@ -71,11 +102,11 @@ function TransactionPage() {
         </div>
       </div>
 
-      {/* 🟢 [복구] 포트폴리오 페이지와 동일한 레이아웃 구조 */}
       <div className={style.contentContainer}>
-        {/* 왼쪽 사이드바 */}
         <aside className={style.sidebar}>
-          <div className={style.sidebarHeader}>포트폴리오 선택</div>
+          <div className={style.sidebarHeader} style={{ color: "#fff" }}>
+            포트폴리오
+          </div>
 
           {portfolios.map((portfolio) => (
             <div
@@ -85,11 +116,22 @@ function TransactionPage() {
               }`}
               onClick={() => setCurrentPortfolio(portfolio._id)}
             >
-              <span className={style.sidebarName}>{portfolio.name}</span>
+              {/* 🟢 [수정] 이름 옆에 (통화) 추가 */}
+              <span className={style.sidebarName}>
+                {portfolio.name}
+                <span
+                  style={{
+                    fontSize: "0.85em",
+                    opacity: 0.6,
+                    marginLeft: "4px",
+                  }}
+                >
+                  ({portfolio.baseCurrency})
+                </span>
+              </span>
 
-              {/* 🟢 [요청반영] 각 포트폴리오 옆에 거래내역 추가(+) 버튼 */}
               <button
-                className={style.sidebarAddBtn}
+                className={style.sidebarIconBtn}
                 onClick={(e) => handleAddTransaction(e, portfolio._id)}
                 title="거래내역 추가"
               >
@@ -99,58 +141,100 @@ function TransactionPage() {
           ))}
         </aside>
 
-        {/* 오른쪽 메인 콘텐츠 */}
         <div className={style.mainContent}>
           <table className={style.portfolioTable}>
             <thead>
               <tr>
                 <th>티커</th>
                 <th>종류</th>
-                <th>수량</th>
-                <th>가격</th>
-                <th>통화</th>
+                <th style={{ textAlign: "right" }}>수량</th>
+                <th style={{ textAlign: "right" }}>가격</th>
                 <th>일자</th>
                 <th>삭제</th>
               </tr>
             </thead>
             <tbody>
-              {transactionData && transactionData.length > 0 ? (
-                transactionData.map((transaction) => (
-                  <tr key={transaction._id}>
-                    <td>{transaction.asset?.ticker}</td>
-                    <td
-                      className={
-                        transaction.transactionType === "BUY"
-                          ? style.buy
-                          : style.sell
-                      }
-                    >
-                      {transaction.transactionType}
-                    </td>
-                    <td>{transaction.quantity}</td>
-                    <td className={style.price}>
-                      {transaction.price.toLocaleString()}
-                    </td>
-                    <td>{transaction.currency}</td>
-                    <td>
-                      {transaction.transactionDate
-                        .split("T")[0]
-                        .replace(/-/g, ".")}
-                    </td>
-                    <td>
-                      <button
-                        className={style.actionButton}
-                        onClick={() => handleDeleteTransaction(transaction._id)}
+              {sortedTransactions.length > 0 ? (
+                sortedTransactions.map((transaction) => {
+                  const itemCurrency = transaction.currency;
+                  let convertedPrice = null;
+
+                  if (baseCurrency !== itemCurrency) {
+                    if (baseCurrency === "KRW" && itemCurrency === "USD") {
+                      convertedPrice = transaction.price * EXCHANGE_RATE;
+                    } else if (
+                      baseCurrency === "USD" &&
+                      itemCurrency === "KRW"
+                    ) {
+                      convertedPrice = transaction.price / EXCHANGE_RATE;
+                    }
+                  }
+
+                  return (
+                    <tr key={transaction._id}>
+                      <td style={{ fontWeight: "600", color: "#fff" }}>
+                        {transaction.asset?.ticker}
+                      </td>
+
+                      <td
+                        className={
+                          transaction.transactionType === "BUY"
+                            ? style.buy
+                            : style.sell
+                        }
                       >
-                        <Trash />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                        {transaction.transactionType === "BUY"
+                          ? "매수"
+                          : "매도"}
+                      </td>
+
+                      <td style={{ textAlign: "right" }}>
+                        {transaction.quantity.toLocaleString()}
+                      </td>
+
+                      <td
+                        style={{ textAlign: "right" }}
+                        className={style.price}
+                      >
+                        {formatMoney(transaction.price, transaction.currency)}
+
+                        {convertedPrice !== null && (
+                          <span
+                            style={{
+                              fontSize: "0.85em",
+                              color: "rgba(255,255,255,0.5)",
+                              marginLeft: "6px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            ({formatMoney(convertedPrice, baseCurrency)})
+                          </span>
+                        )}
+                      </td>
+
+                      <td>
+                        {transaction.transactionDate
+                          .split("T")[0]
+                          .replace(/-/g, ".")}
+                      </td>
+
+                      <td>
+                        <button
+                          className={style.actionButton}
+                          onClick={() =>
+                            handleDeleteTransaction(transaction._id)
+                          }
+                        >
+                          <Trash />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={6}
                     style={{
                       textAlign: "center",
                       padding: "3rem",
