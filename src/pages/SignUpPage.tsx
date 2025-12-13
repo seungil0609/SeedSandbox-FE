@@ -7,6 +7,7 @@ import { FirebaseError } from "firebase/app";
 import { auth } from "../store/auth/firebase";
 import { register } from "../store/auth/action";
 import { useSetAtom } from "jotai";
+import { idTokenAtom, isAuthenticatedAtom } from "../store/auth/atoms"; // Atom 추가 임포트
 
 function SignUpPage() {
   const [id, setId] = useState("");
@@ -15,8 +16,13 @@ function SignUpPage() {
   const [nickName, setNickName] = useState("");
   const [agree, setAgree] = useState(false);
   const [status, setStatus] = useState("");
+
   const navigate = useNavigate();
   const setRegister = useSetAtom(register);
+
+  // 🚨 [추가] 토큰 상태를 수동으로 업데이트하기 위한 훅
+  const setToken = useSetAtom(idTokenAtom);
+  const setAuth = useSetAtom(isAuthenticatedAtom);
 
   const handleSignUpError = (error: FirebaseError) => {
     switch (error.code) {
@@ -41,14 +47,31 @@ function SignUpPage() {
       setTimeout(() => setStatus(""), 3000);
       return;
     }
+    if (password !== passwordConfirm) {
+      setStatus("비밀번호가 일치하지 않습니다.");
+      setTimeout(() => setStatus(""), 3000);
+      return;
+    }
+
     createUserWithEmailAndPassword(auth, id, password)
       .then(async (userCredential) => {
+        const user = userCredential.user;
+
+        // 1. 백엔드에 회원 정보 등록
         await setRegister({
-          firebaseUid: userCredential.user.uid,
+          firebaseUid: user.uid,
           email: id,
           nickName: nickName,
         });
-        navigate("/dashboard"); // ▼ '/' 대신 '/dashboard'로 변경
+
+        // 2. 🚨 [핵심 수정] 토큰을 강제로 가져와서 상태에 즉시 주입
+        // Firebase 리스너가 감지하기 전에 우리가 먼저 넣어줍니다.
+        const token = await user.getIdToken();
+        setToken(token);
+        setAuth(true);
+
+        // 3. 상태 업데이트가 완료된 후 대시보드로 이동
+        navigate("/dashboard");
       })
       .catch((error) => {
         handleSignUpError(error);
@@ -115,7 +138,7 @@ function SignUpPage() {
           </div>
         </section>
         <div className={style.rowWrapper}>
-          <p>회원이라면</p>
+          <p>회원이 아니라면</p>
           <Link to="/signIn" className={style.loginTextButton}>
             로그인
           </Link>
