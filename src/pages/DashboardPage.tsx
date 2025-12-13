@@ -17,21 +17,13 @@ import {
 import HistoricalLineChart from "../widgets/HistoricalLineChart";
 import { selectedPortfolioIdAtom } from "../store/portfolios/atoms";
 import { Link } from "react-router-dom";
+import RiskComparisonBar from "../widgets/RiskComparisonBar";
+import { Bot } from "lucide-react";
 
 // 버튼 그룹
-const ButtonGroup = ({
-  options,
-  value,
-  onChange,
-  className,
-}: {
-  options: { label: string; value: string }[];
-  value: string;
-  onChange: (v: string) => void;
-  className?: string;
-}) => (
-  <div className={className || style.buttonRail}>
-    {options.map((opt) => (
+const ButtonGroup = ({ options, value, onChange }: any) => (
+  <div className={style.buttonRail}>
+    {options.map((opt: any) => (
       <button
         key={opt.value}
         className={`${style.button} ${value === opt.value ? style.active : ""}`}
@@ -55,9 +47,6 @@ const toHtmlWithEmphasis = (raw: string) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return `<strong>${escape(part.slice(2, -2))}</strong>`;
       }
-      if (part.startsWith("*") && part.endsWith("*")) {
-        return `<em>${escape(part.slice(1, -1))}</em>`;
-      }
       return escape(part);
     })
     .join("");
@@ -79,7 +68,7 @@ function DashboardPage() {
   const [range, setRange] = useState("7d");
   const [marketIndex, setMarketIndex] = useState("nasdaq");
 
-  // Options (생략 없이 그대로 둠)
+  // ✅ [복구 완료] 간격 옵션
   const intervalOptions = [
     { label: "1일", value: "1d" },
     { label: "5일", value: "5d" },
@@ -88,8 +77,9 @@ function DashboardPage() {
     { label: "90일", value: "3mo" },
   ];
 
+  // ✅ [복구 완료] 기간 옵션 (6개월, 3년 추가)
   const rangeOptions = [
-    { label: "7일", value: "7d" },
+    { label: "1주", value: "7d" },
     { label: "1개월", value: "1mo" },
     { label: "3개월", value: "3mo" },
     { label: "6개월", value: "6mo" },
@@ -98,27 +88,23 @@ function DashboardPage() {
     { label: "전체", value: "max" },
   ];
 
+  // ✅ [복구 완료] 시장 지수 (KOSPI, KOSDAQ 포함)
   const indexOptions = [
     { label: "S&P500", value: "sp500" },
-    { label: "Dow Jones", value: "dowjones" },
+    { label: "Dow", value: "dowjones" },
     { label: "Nasdaq", value: "nasdaq" },
     { label: "KOSPI", value: "kospi" },
     { label: "KOSDAQ", value: "kosdaq" },
   ];
 
-  // API 호출
+  const getBenchmarkName = () =>
+    indexOptions.find((opt) => opt.value === marketIndex)?.label || "Market";
+
   useEffect(() => {
     if (!selectedPortfolioId) return;
     getPortfolioChartData(range, interval);
     getMarketIndexChartData(range, interval, marketIndex);
-  }, [
-    interval,
-    range,
-    marketIndex,
-    selectedPortfolioId,
-    getPortfolioChartData,
-    getMarketIndexChartData,
-  ]);
+  }, [interval, range, marketIndex, selectedPortfolioId]);
 
   useEffect(() => {
     if (!selectedPortfolioId) return;
@@ -127,266 +113,200 @@ function DashboardPage() {
     getPortfolioChartData(range, interval);
     getMarketIndexChartData(range, interval, marketIndex);
     getPortfolioAIReview();
-  }, [
-    selectedPortfolioId,
-    getPortfolioRiskData,
-    getPortfolioDashboardData,
-    getPortfolioChartData,
-    getMarketIndexChartData,
-    getPortfolioAIReview,
-    marketIndex,
-  ]);
+  }, [selectedPortfolioId, marketIndex]);
 
-  // Case 1: 포트폴리오 ID 자체가 없을 때 (생성 유도)
   if (!selectedPortfolioId) {
     return (
       <div
         className={style.pageWrapper}
-        style={{
-          height: "80vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
+        style={{ justifyContent: "center", alignItems: "center" }}
       >
-        <h2 style={{ marginBottom: "1rem", color: "#fff" }}>
-          선택된 포트폴리오가 없습니다.
-        </h2>
-        <p style={{ marginBottom: "2rem", color: "#aaa" }}>
-          상단 메뉴의 '포트폴리오' 탭에서 새 포트폴리오를 생성하거나
-          선택해주세요.
-        </p>
-        <Link
-          to="/portfolio"
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#00bfff",
-            color: "white",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
+        <h2>포트폴리오를 선택해주세요.</h2>
+        <Link to="/portfolio" style={{ color: "#00bfff" }}>
           포트폴리오 관리로 이동
         </Link>
       </div>
     );
   }
 
-  // Case 2: 포트폴리오는 있지만 자산(매입금액)이 0원일 때 (거래내역 추가 유도)
-  // totals 데이터가 로드된 상태(null이 아님)에서 CostBasis가 0이면 빈 깡통으로 간주
-  if (totals && totals.totalPortfolioCostBasis === 0) {
-    return (
-      <div
-        className={style.pageWrapper}
-        style={{
-          height: "80vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        <h2 style={{ marginBottom: "1rem", color: "#fff" }}>
-          아직 거래 내역이 없습니다.
-        </h2>
-        <p style={{ marginBottom: "2rem", color: "#aaa" }}>
-          매수/매도 내역을 입력하면 AI가 포트폴리오를 분석해드립니다.
-          <br />첫 번째 자산을 추가해보세요!
-        </p>
-        <Link
-          to="/transactions"
-          style={{
-            padding: "12px 24px",
-            backgroundColor: "#28a745",
-            color: "white",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: "bold",
-            fontSize: "1.1rem",
-          }}
-        >
-          거래내역 추가하기
-        </Link>
-      </div>
-    );
-  }
-
-  // 정상 데이터 렌더링
-  const summaryItems = totals
+  const kpiItems = totals
     ? [
         {
-          key: "totalPortfolioValue",
-          label: "총 포트폴리오 가치",
-          value: totals.totalPortfolioValue ?? 0,
-          print:
-            (totals.totalPortfolioValue || 0).toFixed(2) +
-            " " +
-            (totals.baseCurrency || "USD"),
+          label: "총 자산 가치",
+          value: `${
+            totals.baseCurrency
+          } ${totals.totalPortfolioValue.toLocaleString()}`,
+          sub: "Total Value",
+          status: "neutral",
         },
         {
-          key: "totalPortfolioCostBasis",
-          label: "총 매입 원가",
-          value: totals.totalPortfolioCostBasis ?? 0,
-          print:
-            (totals.totalPortfolioCostBasis || 0).toFixed(2) +
-            " " +
-            (totals.baseCurrency || "USD"),
+          label: "총 수익",
+          value: `${
+            totals.baseCurrency
+          } ${totals.totalPortfolioProfitLoss.toLocaleString()}`,
+          sub: totals.totalPortfolioProfitLoss > 0 ? "▲ Profit" : "▼ Loss",
+          status:
+            totals.totalPortfolioProfitLoss >= 0 ? "positive" : "negative",
         },
         {
-          key: "totalPortfolioProfitLoss",
-          label: "총 손익",
-          value: totals.totalPortfolioProfitLoss ?? 0,
-          print:
-            (totals.totalPortfolioProfitLoss || 0).toFixed(2) +
-            " " +
-            (totals.baseCurrency || "USD"),
+          label: "원금",
+          value: `${
+            totals.baseCurrency
+          } ${totals.totalPortfolioCostBasis.toLocaleString()}`,
+          sub: "Cost Basis",
+          status: "neutral",
         },
         {
-          key: "totalPortfolioReturnPercentage",
-          label: "총 수익률(%)",
-          value: totals.totalPortfolioReturnPercentage ?? 0,
-          print: (totals.totalPortfolioReturnPercentage || 0).toFixed(2) + "%",
+          label: "수익률",
+          value: `${totals.totalPortfolioReturnPercentage.toFixed(2)}%`,
+          sub: "Return Rate",
+          status:
+            totals.totalPortfolioReturnPercentage >= 0
+              ? "positive"
+              : "negative",
         },
       ]
     : [];
 
-  const riskSummaryItems =
-    riskData && riskData.metrics
+  const riskComparisonItems =
+    riskData && riskData.metrics && riskData.benchmark
       ? [
           {
             key: "volatility",
-            label: "변동성",
-            value: riskData.metrics.volatility ?? 0,
-            print: (riskData.metrics.volatility || 0).toFixed(2),
+            label: "변동성 (Volatility)",
+            desc: "낮을수록 안정적",
+            portfolioValue: riskData.metrics.volatility ?? 0,
+            benchmarkValue: riskData.benchmark.volatility ?? 0,
           },
           {
             key: "beta",
-            label: "베타",
-            value: riskData.metrics.beta ?? 0,
-            print: (riskData.metrics.beta || 0).toFixed(2),
+            label: "베타 (Beta)",
+            desc: "시장 민감도 (기준 1.0)",
+            portfolioValue: riskData.metrics.beta ?? 0,
+            benchmarkValue: 1.0,
           },
           {
             key: "maxDrawdown",
-            label: "최대 낙폭",
-            value: riskData.metrics.maxDrawdown ?? 0,
-            print: (riskData.metrics.maxDrawdown || 0).toFixed(2),
+            label: "최대 낙폭 (MDD)",
+            desc: "0에 가까울수록 좋음",
+            portfolioValue: riskData.metrics.maxDrawdown ?? 0,
+            benchmarkValue: riskData.benchmark.maxDrawdown ?? 0,
+            isNegative: true,
           },
           {
             key: "sharpeRatio",
-            label: "샤프 지수",
-            value: riskData.metrics.sharpeRatio ?? 0,
-            print: (riskData.metrics.sharpeRatio || 0).toFixed(2),
+            label: "샤프 지수 (Sharpe)",
+            desc: "클수록 좋음",
+            portfolioValue: riskData.metrics.sharpeRatio ?? 0,
+            benchmarkValue: riskData.benchmark.sharpeRatio ?? 0,
           },
         ]
       : [];
-
-  const DashboardSummaryCard = ({
-    header,
-    data,
-    print,
-  }: {
-    header: string;
-    data: number;
-    print: string;
-  }) => {
-    return (
-      <div className={style.card}>
-        <h2 className={style.card__header}>{header}</h2>
-        <p
-          className={`${style.card__data} ${
-            data > 0 ? style.profit : data < 0 ? style.loss : ""
-          }`}
-        >
-          {print}
-        </p>
-      </div>
-    );
-  };
 
   return (
     <div className={style.pageWrapper}>
       <div className={style.header}>
         <div className={style.title}>대시보드</div>
       </div>
-      <div className={style.gridWrapper}>
-        <div className={style.chartWrapper__line}>
-          <div className={style.columnWrapper}>
-            <h3 className={style.aiReview__header}>포트폴리오 가치 추이</h3>
-            <HistoricalLineChart />
-            <div>
-              <div style={{ marginTop: "10px" }}>
-                <div className={style.buttonGroupHeader}>비교 시장 지수</div>
-                <ButtonGroup
-                  options={indexOptions}
-                  value={marketIndex}
-                  onChange={setMarketIndex}
-                />
-              </div>
-              <div>
-                <div className={style.buttonGroupHeader}>간격</div>
-                <ButtonGroup
-                  options={intervalOptions}
-                  value={interval}
-                  onChange={setInterval}
-                />
-              </div>
-              <div>
-                <div className={style.buttonGroupHeader}>기간</div>
-                <ButtonGroup
-                  options={rangeOptions}
-                  value={range}
-                  onChange={setRange}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className={style.riskSummaryGrid}>
-          {summaryItems.map((item) => (
-            <DashboardSummaryCard
-              key={item.key}
-              header={item.label}
-              data={item.value}
-              print={item.print}
-            />
-          ))}
-          {riskSummaryItems.map((item) => (
-            <DashboardSummaryCard
-              key={item.key}
-              header={item.label}
-              data={item.value}
-              print={item.print}
-            />
-          ))}
+      <div className={style.filterBar}>
+        <div className={style.filterBar__group}>
+          <span className={style.filterBar__label}>비교 지수</span>
+          <ButtonGroup
+            options={indexOptions}
+            value={marketIndex}
+            onChange={setMarketIndex}
+          />
+        </div>
+        <div className={style.filterBar__group}>
+          <span className={style.filterBar__label}>기간 설정</span>
+          <ButtonGroup
+            options={rangeOptions}
+            value={range}
+            onChange={setRange}
+          />
+          <ButtonGroup
+            options={intervalOptions}
+            value={interval}
+            onChange={setInterval}
+          />
         </div>
       </div>
 
-      <div className={style.gridWrapper}>
-        <div className={style.chartWrapper__matrix}>
-          <div className={style.columnWrapper}>
-            <h3 className={style.aiReview__header}>자산 상관관계 매트릭스</h3>
-            <CorrelationMatrixChart />
+      <div className={style.kpiRow}>
+        {kpiItems.map((kpi, idx) => (
+          <div key={idx} className={`${style.kpiCard} ${style[kpi.status]}`}>
+            <span className={style.kpiCard__label}>{kpi.label}</span>
+            <span className={style.kpiCard__value}>{kpi.value}</span>
+            <span
+              className={`${style.kpiCard__sub} ${
+                kpi.status === "positive"
+                  ? style.profit
+                  : kpi.status === "negative"
+                  ? style.loss
+                  : ""
+              }`}
+            >
+              {kpi.sub}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className={style.aiBanner}>
+        <div className={style.aiBanner__icon}>
+          <Bot size={24} color="#00bfff" />
+        </div>
+        <div className={style.aiBanner__text}>
+          <span className={style.aiBanner__title}>AI 포트폴리오 진단</span>
+          <span className={style.aiBanner__desc}>
+            {aiReviewText ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: toHtmlWithEmphasis(aiReviewText),
+                }}
+              />
+            ) : (
+              "데이터를 분석 중입니다..."
+            )}
+          </span>
+        </div>
+      </div>
+
+      <div className={style.mainChartSection}>
+        <h3>포트폴리오 가치 추이 (vs {getBenchmarkName()})</h3>
+        <HistoricalLineChart range={range} />
+      </div>
+
+      <div className={style.analysisGrid}>
+        <div className={style.riskContainer}>
+          <h3 className={style.sectionTitle}>리스크 상세 분석</h3>
+          <div className={style.riskGrid}>
+            {riskComparisonItems.map((item) => (
+              <div key={item.key} className={style.riskCard}>
+                <div className={style.riskCard__header}>
+                  <h4>{item.label}</h4>
+                  <span>{item.desc}</span>
+                </div>
+                {/* 차트 영역 */}
+                <div className={style.chartContainer}>
+                  <RiskComparisonBar
+                    portfolioValue={item.portfolioValue}
+                    benchmarkValue={item.benchmarkValue}
+                    benchmarkName={getBenchmarkName()}
+                    isNegative={item.isNegative}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className={style.aiReview}>
-          <h3 className={style.aiReview__header}>AI 포트폴리오 분석</h3>
-          {aiReviewText && aiReviewText.trim().length > 0 ? (
-            <div
-              className={style.aiReview__content}
-              dangerouslySetInnerHTML={{
-                __html: toHtmlWithEmphasis(aiReviewText),
-              }}
-            />
-          ) : (
-            <p className={style.aiReview__content}>
-              AI 분석을 불러오는 중입니다...
-            </p>
-          )}
+
+        <div className={style.matrixContainer}>
+          <h3 className={style.sectionTitle}>자산 상관관계</h3>
+          <div className={style.matrixCard}>
+            <CorrelationMatrixChart />
+          </div>
         </div>
       </div>
     </div>
