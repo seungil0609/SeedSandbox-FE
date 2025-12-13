@@ -1,64 +1,67 @@
-import { atom } from 'jotai';
+import { atom } from "jotai";
 
 export interface AssetMeta {
-    symbol: string;
-    shortName: string;
-    longName: string;
-    exchange: string;
-    currency: string;
-    assetType: string;
-    regularMarketPrice: number;
-    regularMarketChange: number;
-    regularMarketChangePercent: number;
-    regularMarketTime: string;
-    sector: string;
+  symbol: string;
+  shortName: string;
+  longName: string;
+  exchange: string;
+  currency: string;
+  assetType: string;
+  regularMarketPrice: number;
+  regularMarketChange: number;
+  regularMarketChangePercent: number;
+  regularMarketTime: string;
+  sector: string;
 }
 
 export interface AssetFundamentals {
-    marketCap: number;
-    trailingPE: number;
-    forwardPE: number;
-    priceToBook: number;
-    eps: number;
-    profitMargins: number;
-    totalRevenue: number;
-    totalCash: number;
-    totalDebt: number;
-    dividendYield: number;
-    beta: number;
-    targetPrice: number;
-    recommendationKey: string;
-    fiftyTwoWeekHigh: number;
-    fiftyTwoWeekLow: number;
-    volume: number;
+  marketCap: number;
+  trailingPE: number;
+  forwardPE: number;
+  priceToBook: number;
+  eps: number;
+  profitMargins: number;
+  totalRevenue: number;
+  totalCash: number;
+  totalDebt: number;
+  dividendYield: number;
+  beta: number;
+  targetPrice: number;
+  recommendationKey: string;
+  fiftyTwoWeekHigh: number;
+  fiftyTwoWeekLow: number;
+  volume: number;
+  netAssets?: number; // ETF 순자산
+  expenseRatio?: number; // ETF 운용 보수
+  circulatingSupply?: number; // 암호화폐 유통량
 }
 
 export interface AssetNews {
-    title: string;
-    link: string;
-    publisher: string;
-    providerPublishTime: string;
-    thumbnail: string;
+  title: string;
+  link: string;
+  publisher: string;
+  providerPublishTime: string;
+  thumbnail: string;
 }
 
 export interface AssetChartData {
-    date: string;
-    close: number;
-    volume: number;
+  date: string;
+  close: number;
+  volume: number;
 }
 
 export interface AssetDetailData {
-    meta: AssetMeta;
-    fundamentals: AssetFundamentals;
-    chartData: AssetChartData[];
-    news: AssetNews[];
+  meta: AssetMeta;
+  fundamentals: AssetFundamentals;
+  chartData: AssetChartData[];
+  news: AssetNews[];
 }
 
 export interface AssetSearch {
-    symbol: string;
-    shortname: string;
-    exchange: string;
-    typeDisp: string;
+  symbol: string;
+  shortname: string;
+  exchange: string;
+  typeDisp: string;
 }
 
 export const SelectedAssetDetailDataAtom = atom<AssetDetailData | null>(null);

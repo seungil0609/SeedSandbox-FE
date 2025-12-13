@@ -86,7 +86,7 @@ function CommunityPage() {
         <aside className={style.sidebar}>
           {/* 🟢 [추가] 게시판 선택 헤더 (스타일 통일) */}
           <div className={style.sidebarHeader} style={{ color: "#ffffff" }}>
-            게시판 선택
+            게시판
           </div>
           {BOARD_TYPES.map((type) => (
             <button

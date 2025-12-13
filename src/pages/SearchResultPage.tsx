@@ -21,11 +21,10 @@ function SearchResultPage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
-    // 검색어가 없으면 URL 파라미터로 검색 수행
     if (!searchKeyword && param.query) {
       getSearchResult(param.query);
     }
-  }, [param.query]); // 의존성 배열 수정
+  }, [param.query]);
 
   const handleDetailOpen = async (ticker: string) => {
     await getDetailData(ticker);
@@ -54,7 +53,14 @@ function SearchResultPage() {
                 <div className={style.name}>{result.shortname}</div>
               </div>
 
-              <div className={style.exchangeBadge}>{result.exchange}</div>
+              <div className={style.badgeWrapper}>
+                {/* 🟢 [추가] 자산 타입 뱃지 (EQUITY, ETF 등) */}
+                <div className={`${style.exchangeBadge} ${style.typeBadge}`}>
+                  {result.typeDisp}
+                </div>
+                {/* 기존 거래소 뱃지 */}
+                <div className={style.exchangeBadge}>{result.exchange}</div>
+              </div>
             </button>
           ))
         ) : (

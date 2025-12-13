@@ -28,6 +28,32 @@
   gap: 0.5rem;
 }
 
+// 🟢 [신규] 티커와 통화를 가로로 배치하기 위한 래퍼
+.rowWrapper__ticker {
+  display: flex;
+  gap: 0.75rem; // 사이 간격
+  width: 100%;
+  align-items: flex-end; // 라벨 높이가 달라도 입력창 하단 라인 맞춤 (보통은 flex-start도 무방)
+}
+
+// 🟢 [신규] 티커 영역 (남은 공간 모두 차지)
+.tickerGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; // 라벨과 입력창 사이 간격
+  position: relative; // 드롭다운 위치 기준점
+}
+
+// 🟢 [신규] 통화 영역 (고정 너비)
+.currencyGroup {
+  width: 110px; // 'KRW', 'USD' 등이 들어가기에 적당한 크기
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-shrink: 0; // 줄어들지 않음
+}
+
 // 🟢 [복구 및 수정] 매수/매도 버튼 컨테이너 (버튼들을 감싸는 부모 div가 있다면 적용)
 .rowWrapper__type {
   display: flex;
@@ -245,4 +271,22 @@ header p {
 .dropdown__meta {
   color: rgba(255, 255, 255, 0.65);
   font-size: 12px;
+}
+
+// 🟢 [신규] 읽기 전용 입력창 스타일 (통화 표시용)
+.readOnlyInput {
+  padding: 0.5rem 0.75rem;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08); // 테두리를 더 연하게
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+
+  background: rgba(0, 0, 0, 0.2); // 일반 입력창보다 더 어둡게
+  color: rgba(255, 255, 255, 0.5); // 텍스트도 약간 흐리게
+
+  cursor: default; // 커서 모양 기본
+  outline: none;
+  transition: all 0.2s ease;
+  text-align: center; // 중앙 정렬
 }
