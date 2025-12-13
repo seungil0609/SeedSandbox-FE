@@ -1,230 +1,248 @@
 .overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(40, 40, 40, 0.35);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 9999;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 40, 40, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.08);
-    width: 650px;
-    padding: 2rem 3rem;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  width: 650px;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
 }
 
 .columnWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.rowWrapper {
-    display: flex;
-    align-items: center;
-
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    &__type {
-        @extend .rowWrapper;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    &__number {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 1rem;
-    }
+// 🟢 [복구 및 수정] 매수/매도 버튼 컨테이너 (버튼들을 감싸는 부모 div가 있다면 적용)
+.rowWrapper__type {
+  display: flex;
+  gap: 0.5rem; // 버튼 사이 간격
+  width: 100%;
 }
 
-.buttonRail {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.button__cancel {
-    display: flex;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    background: rgba(255, 0, 0, 0.08);
-    color: #c02525;
-    transition: all ease 0.4s;
-
-    &:hover {
-        background: #c02525;
-        color: #fff;
-    }
-}
-
-.button__save {
-    display: flex;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    background: rgba(0, 191, 255, 0.08);
-    color: #00bfff;
-    transition: all ease 0.4s;
-
-    &:hover {
-        background: #00bfff;
-        color: #fff;
-    }
-}
-
+// 🟢 [복구] 매수/매도 버튼 공통 스타일
 .button__sell,
 .button__buy {
-    display: flex;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all ease 0.4s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex: 1; // ⭐️ 중요: 버튼이 반반씩 공간을 차지하도록 설정
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.75rem; // 높이 확보
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // 기본 상태 (비활성): 회색빛 반투명
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
 }
 
+// 🔴 [복구] 매도(Sell) 버튼 활성화 상태
 .button__sell {
-    background: rgba(255, 255, 255, 0.08);
-    color: #c02525;
+  // 선택되었을 때 (클래스명 주의: React 코드에서 조건부로 붙는 클래스 확인 필요)
+  // 보통 className={`${style.button__sell} ${type === 'SELL' ? style.button__sell__active : ''}`}
+  &__active {
+    background-color: rgba(192, 37, 37, 0.2) !important; // 붉은 배경
+    color: #ff4d4d !important; // 붉은 글씨
+    border: 1px solid rgba(192, 37, 37, 0.5); // (선택사항) 테두리 추가로 강조
 
-    &__active {
-        background: #c02525;
-        color: #fff;
+    &:hover {
+      background-color: rgba(192, 37, 37, 0.3) !important;
     }
+  }
 }
 
+// 🔵 [복구] 매수(Buy) 버튼 활성화 상태
 .button__buy {
-    background: rgba(255, 255, 255, 0.08);
-    color: #218838;
+  &__active {
+    background-color: rgba(33, 136, 56, 0.2) !important; // 초록 배경
+    color: #4cd137 !important; // 초록 글씨
+    border: 1px solid rgba(33, 136, 56, 0.5); // (선택사항) 테두리 추가
 
-    &__active {
-        background: #218838;
-        color: #fff;
+    &:hover {
+      background-color: rgba(33, 136, 56, 0.3) !important;
     }
+  }
 }
-.button__buy:hover,
-.button__sell:hover {
-    background: rgba(255, 255, 255, 0.18);
+.buttonRail {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
+// 공통 버튼 스타일 (취소, 저장, 추가 등)
+.button__cancel,
+.button__save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98); // 살짝 축소 (클릭감)
+  }
+}
+
+// 🔴 [취소 버튼] 빨강 호버 제거
+.button__cancel {
+  background: rgba(255, 255, 255, 0.06); // 회색 계열로 변경
+  color: rgba(255, 255, 255, 0.7);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12); // 밝기만 증가
+    color: #fff;
+  }
+}
+
+// 🔵 [저장/추가 버튼] 파랑 호버 제거
+.button__save {
+  // 기본 상태: 아주 연한 파랑 틴트 (식별용) or 그냥 회색
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18); // 밝기만 증가 (파랑색 X)
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
 input,
 select {
-    padding: 0.5rem 1rem;
-    height: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 6px;
-    font-size: 14px;
-    background: rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 1rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.06);
 
-    &::placeholder {
-        color: rgba(255, 255, 255, 0.4);
-    }
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
 
-    &:focus {
-        outline: none;
-        border-color: rgba(255, 255, 255, 0.35);
-        background: rgba(255, 255, 255, 0.12);
-    }
-}
-
-select:focus {
+  &:focus {
     outline: none;
     border-color: rgba(255, 255, 255, 0.35);
     background: rgba(255, 255, 255, 0.12);
+  }
+  option {
+    background-color: #202b38; // 3번째 사진과 유사한 어두운 배경색
+    color: #ffffff; // 텍스트 흰색
+    padding: 10px;
+  }
+}
+
+select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 header h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
 header p {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .autocomplete {
-    position: relative;
+  position: relative;
 }
 
 .dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
-    background: rgba(20, 28, 38, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    padding: 6px;
-    max-height: 320px;
-    width: 100%;
-    overflow: auto;
-    z-index: 10000;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(20, 28, 38, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 6px;
+  max-height: 320px;
+  width: 100%;
+  overflow: auto;
+  z-index: 10000;
 }
 
 .dropdown__item {
-    display: grid;
-    grid-template-columns: 88px 1fr auto;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.9);
-    transition: all 0.2s ease;
+  display: grid;
+  grid-template-columns: 88px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.08);
-    }
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
 
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
-    }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
+  }
 }
 
 .dropdown__symbol {
-    font-weight: 700;
-    color: #ffffff;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .dropdown__name {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 13px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dropdown__meta {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
 }

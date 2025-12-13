@@ -1,18 +1,19 @@
-import { atom } from 'jotai';
+import { atom } from "jotai";
 
 export interface Profile {
-    _id: string;
-    firebaseUid: string;
-    email: string;
-    nickname: string;
-    createdAt: string;
+  _id: string;
+  firebaseUid: string;
+  email: string;
+  nickname: string;
+  createdAt: string;
 }
 
 export interface ProfileBasic {
-    id: string;
-    email: string;
-    nickname: string;
-    createdAt: string;
+  _id: string;
+  id: string;
+  email: string;
+  nickname: string;
+  createdAt: string;
 }
 
 /** Firebase ID 토큰 */
