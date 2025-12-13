@@ -8,38 +8,53 @@ import {
 } from "react-router-dom";
 import MainPage from "../pages/MainPage";
 import DashboardPage from "../pages/DashboardPage";
-import LandingPage from "../pages/LandingPage";
 import SignInPage from "../pages/SignInPage";
 import SignUpPage from "../pages/SignUpPage";
 import PortfolioPage from "../pages/PortfolioPage";
 import CommunityPage from "../pages/CommunityPage";
 import MyPage from "../pages/MyPage";
+import TransactionPage from "../pages/TransactionPage";
+import SearchResultPage from "../pages/SearchResultPage";
 import { useAtomValue } from "jotai";
 import { isAuthenticatedAtom } from "../store/auth/atoms";
 import { useFirebaseAuth } from "../store/auth/firebase";
-import TransactionPage from "../pages/TransactionPage";
-import SearchResultPage from "../pages/SearchResultPage";
 
-// 1. [로그인 필수] 로그인이 안 되어 있으면 로그인 페이지로 튕겨냄
-export function RequireAuth() {
-  const isAuth = useAtomValue(isAuthenticatedAtom);
-  if (isAuth === undefined) {
-    return null; // 로딩 중 (스피너 등을 넣어도 좋음)
-  }
-  if (isAuth === false) {
-    return <Navigate to="/signin" replace />;
-  }
-  return <Outlet />;
+// 🌀 로딩 컴포넌트 (간단하게 구현)
+function GlobalLoader() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#111",
+        color: "#fff",
+      }}
+    >
+      Loading SeedUp...
+    </div>
+  );
 }
 
-// 2. [추가됨] 루트('/') 접속 시 분기 처리 컴포넌트
+// 🛡️ [게스트 가드] 로그인한 사람은 로그인/회원가입 페이지 접근 금지 -> 대시보드로 보냄
+function GuestOnlyRoute() {
+  const isAuth = useAtomValue(isAuthenticatedAtom);
+  if (isAuth === undefined) return <GlobalLoader />; // 로딩 중
+  return isAuth ? <Navigate to="/dashboard" replace /> : <Outlet />;
+}
+
+// 🛡️ [유저 가드] 로그인 안 한 사람은 내부 페이지 접근 금지 -> 로그인으로 보냄
+function ProtectedRoute() {
+  const isAuth = useAtomValue(isAuthenticatedAtom);
+  if (isAuth === undefined) return <GlobalLoader />; // 로딩 중
+  return isAuth ? <Outlet /> : <Navigate to="/signin" replace />;
+}
+
+// 🔀 [루트 리다이렉터] / 접속 시 상태에 따라 분기
 function RootRedirector() {
   const isAuth = useAtomValue(isAuthenticatedAtom);
-
-  if (isAuth === undefined) {
-    return null; // 로딩 중
-  }
-  // 로그인 상태면 대시보드로, 아니면 로그인 페이지로
+  if (isAuth === undefined) return <GlobalLoader />;
   return isAuth ? (
     <Navigate to="/dashboard" replace />
   ) : (
@@ -48,22 +63,27 @@ function RootRedirector() {
 }
 
 function App() {
+  // Firebase Auth 리스너 실행
   useFirebaseAuth();
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* 3. 메인('/') 접속 시 로그인 여부에 따라 자동 이동 */}
+        {/* 1. 기본 경로 처리 */}
         <Route path="/" element={<RootRedirector />} />
 
-        {/* 로그인/회원가입 페이지 */}
-        {/* LandingPage는 현재 로그인된 헤더를 보여주는 문제가 있으므로 사용하지 않거나 수정 필요 */}
-        {/* <Route path="/landing" element={<LandingPage />} /> */}
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+        {/* 2. 게스트 전용 (로그인/회원가입) - 로그인 상태면 접근 불가 */}
+        <Route element={<GuestOnlyRoute />}>
+          {/* LandingPage는 현재 불필요해 보이므로 제거하거나 signin으로 대체 */}
+          <Route path="/landing" element={<Navigate to="/signin" replace />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Route>
 
-        {/* 로그인 해야만 접근 가능한 페이지들 */}
-        <Route element={<MainPage />}>
-          <Route element={<RequireAuth />}>
+        {/* 3. 회원 전용 (대시보드 등) - 비로그인 상태면 접근 불가 */}
+        <Route element={<ProtectedRoute />}>
+          {/* MainPage 레이아웃(Header 포함) 적용 */}
+          <Route element={<MainPage />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/transactions" element={<TransactionPage />} />
@@ -72,6 +92,9 @@ function App() {
             <Route path="/my" element={<MyPage />} />
           </Route>
         </Route>
+
+        {/* 4. 없는 페이지 처리 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

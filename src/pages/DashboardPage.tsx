@@ -15,9 +15,10 @@ import {
   PortfolioTotalsAtom,
 } from "../store/dashboard/atoms";
 import HistoricalLineChart from "../widgets/HistoricalLineChart";
-import { selectedPortfolioIdAtom } from "../store/portfolios/atoms"; // ID 가져오기
-import { useNavigate } from "react-router-dom"; // 이동 기능
+import { selectedPortfolioIdAtom } from "../store/portfolios/atoms";
+import { Link } from "react-router-dom";
 
+// 버튼 그룹 컴포넌트
 const ButtonGroup = ({
   options,
   value,
@@ -42,7 +43,7 @@ const ButtonGroup = ({
   </div>
 );
 
-// 마크업 HTML로 변환
+// 마크업 HTML 변환 함수
 const toHtmlWithEmphasis = (raw: string) => {
   const escape = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -62,23 +63,24 @@ const toHtmlWithEmphasis = (raw: string) => {
 };
 
 function DashboardPage() {
+  // Atoms
   const getPortfolioRiskData = useSetAtom(getPortfolioRiskDataAtom);
   const getPortfolioDashboardData = useSetAtom(getPortfolioDashboardDataAtom);
   const getPortfolioChartData = useSetAtom(getPortfolioChartDataAtom);
   const getMarketIndexChartData = useSetAtom(getPortfolioChartIndexDataAtom);
   const getPortfolioAIReview = useSetAtom(getPortfolioAIReviewAtom);
+
   const [totals] = useAtom(PortfolioTotalsAtom);
   const [aiReviewText] = useAtom(PortfolioAIReviewAnswerAtom);
   const [riskData] = useAtom(PortfolioRiskAtom);
-
-  // [수정] ID 확인용 atom과 네비게이션 훅
   const [selectedPortfolioId] = useAtom(selectedPortfolioIdAtom);
-  const navigate = useNavigate();
 
+  // Local State
   const [interval, setInterval] = useState("1d");
   const [range, setRange] = useState("7d");
   const [marketIndex, setMarketIndex] = useState("nasdaq");
 
+  // Options
   const intervalOptions = [
     { label: "1일", value: "1d" },
     { label: "5일", value: "5d" },
@@ -105,27 +107,80 @@ function DashboardPage() {
     { label: "KOSDAQ", value: "kosdaq" },
   ];
 
-  // [수정] ID가 없으면 API 호출을 아예 안 함 (500 에러 방지)
+  // 데이터 조회 useEffect
   useEffect(() => {
     if (!selectedPortfolioId) return;
+
+    // 차트 데이터 갱신
     getPortfolioChartData(range, interval);
     getMarketIndexChartData(range, interval, marketIndex);
-  }, [interval, range, marketIndex, selectedPortfolioId]);
+  }, [
+    interval,
+    range,
+    marketIndex,
+    selectedPortfolioId,
+    getPortfolioChartData,
+    getMarketIndexChartData,
+  ]);
 
-  // [수정] ID가 없으면 포트폴리오 페이지로 강제 이동 (핵심!)
   useEffect(() => {
-    if (!selectedPortfolioId) {
-      navigate("/portfolio"); // ID 없으면 포트폴리오 페이지로 납치
-      return;
-    }
+    if (!selectedPortfolioId) return;
 
+    // 초기 데이터 로드 및 포트폴리오 변경 시 갱신
     getPortfolioRiskData(marketIndex);
     getPortfolioDashboardData();
     getPortfolioChartData(range, interval);
     getMarketIndexChartData(range, interval, marketIndex);
     getPortfolioAIReview();
-  }, [selectedPortfolioId]);
+  }, [
+    selectedPortfolioId,
+    getPortfolioRiskData,
+    getPortfolioDashboardData,
+    getPortfolioChartData,
+    getMarketIndexChartData,
+    getPortfolioAIReview,
+    marketIndex,
+  ]); // 의존성 배열 추가
 
+  // 🚨 [방어 로직] 포트폴리오 ID가 없으면 안내 화면 표시
+  if (!selectedPortfolioId) {
+    return (
+      <div
+        className={style.pageWrapper}
+        style={{
+          height: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ marginBottom: "1rem", color: "#fff" }}>
+          선택된 포트폴리오가 없습니다.
+        </h2>
+        <p style={{ marginBottom: "2rem", color: "#aaa" }}>
+          상단 메뉴의 '포트폴리오' 탭에서 새 포트폴리오를 생성하거나
+          선택해주세요.
+        </p>
+        <Link
+          to="/portfolio"
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#00bfff",
+            color: "white",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: "bold",
+          }}
+        >
+          포트폴리오 관리로 이동
+        </Link>
+      </div>
+    );
+  }
+
+  // 요약 데이터 준비
   const summaryItems = totals
     ? [
         {
@@ -191,6 +246,7 @@ function DashboardPage() {
       ]
     : [];
 
+  // 요약 카드 컴포넌트
   const DashboardSummaryCard = ({
     header,
     data,
@@ -205,7 +261,7 @@ function DashboardPage() {
         <h2 className={style.card__header}>{header}</h2>
         <p
           className={`${style.card__data} ${
-            data > 0 ? style.profit : style.loss
+            data > 0 ? style.profit : data < 0 ? style.loss : ""
           }`}
         >
           {print}
@@ -225,7 +281,7 @@ function DashboardPage() {
             <h3 className={style.aiReview__header}>포트폴리오 가치 추이</h3>
             <HistoricalLineChart />
             <div>
-              <div>
+              <div style={{ marginTop: "10px" }}>
                 <div className={style.buttonGroupHeader}>비교 시장 지수</div>
                 <ButtonGroup
                   options={indexOptions}
@@ -252,6 +308,8 @@ function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* 리스크 및 요약 정보 그리드 (수정된 부분) */}
         <div className={style.riskSummaryGrid}>
           {summaryItems.map((item) => (
             <DashboardSummaryCard
@@ -271,6 +329,7 @@ function DashboardPage() {
           ))}
         </div>
       </div>
+
       <div className={style.gridWrapper}>
         <div className={style.chartWrapper__matrix}>
           <div className={style.columnWrapper}>
