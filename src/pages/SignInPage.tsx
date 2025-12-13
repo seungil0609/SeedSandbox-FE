@@ -40,12 +40,13 @@ function SignInPage() {
     signInWithEmailAndPassword(auth, id, password)
       .then(async () => {
         await getPortfolio();
-        navigate("/dashboard"); // ▼ '/' 대신 '/dashboard'로 변경
+        navigate("/dashboard"); // [수정] '/' -> '/dashboard'
       })
       .catch((error) => {
         handleSignInError(error);
       });
   };
+  // ...
   return (
     <>
       <GuestHeader />
