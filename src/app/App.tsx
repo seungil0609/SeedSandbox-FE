@@ -26,6 +26,7 @@ export function RequireAuth() {
     return null; // 로딩 중
   }
   if (isAuth === false) {
+    // 로그인이 안 되어 있으면 로그인 페이지로 튕겨냄
     return <Navigate to="/signin" replace />;
   }
   return <Outlet />;
@@ -36,7 +37,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. 메인 접속 시 랜딩 페이지 보여주기 */}
+        {/* 1. 메인('/') 접속 시 무조건 랜딩 페이지(로그인 유도) 보여주기 */}
         <Route path="/" element={<LandingPage />} />
 
         {/* 2. 로그인/회원가입 페이지 */}

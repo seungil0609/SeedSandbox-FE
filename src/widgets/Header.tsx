@@ -6,9 +6,9 @@ import SearchBar from "./SearchBar";
 function Header() {
   const navigate = useNavigate();
 
-  // ▼ 수정됨: 대시보드 경로를 '/'에서 '/dashboard'로 변경
+  // [수정] 대시보드 경로를 '/'에서 '/dashboard'로 변경
   const headerInfo = [
-    { id: "대시보드", path: "/dashboard" },
+    { id: "대시보드", path: "/dashboard" }, // 여기 수정됨
     { id: "포트폴리오", path: "/portfolio" },
     { id: "거래내역", path: "/transactions" },
     { id: "커뮤니티", path: "/community" },
@@ -18,7 +18,7 @@ function Header() {
   return (
     <div className={style.header}>
       <div className={style.rowWrapper}>
-        {/* 로고 클릭 시에도 대시보드로 이동 */}
+        {/* [수정] 로고 클릭 시에도 /dashboard로 이동 */}
         <a className={style.logo} href="/dashboard">
           SeedUp
         </a>
