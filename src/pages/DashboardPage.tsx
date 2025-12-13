@@ -18,7 +18,7 @@ import HistoricalLineChart from "../widgets/HistoricalLineChart";
 import { selectedPortfolioIdAtom } from "../store/portfolios/atoms";
 import { Link } from "react-router-dom";
 
-// 버튼 그룹 컴포넌트
+// 버튼 그룹
 const ButtonGroup = ({
   options,
   value,
@@ -43,8 +43,9 @@ const ButtonGroup = ({
   </div>
 );
 
-// 마크업 HTML 변환 함수
+// HTML 파서
 const toHtmlWithEmphasis = (raw: string) => {
+  if (!raw) return "";
   const escape = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return raw
@@ -63,7 +64,6 @@ const toHtmlWithEmphasis = (raw: string) => {
 };
 
 function DashboardPage() {
-  // Atoms
   const getPortfolioRiskData = useSetAtom(getPortfolioRiskDataAtom);
   const getPortfolioDashboardData = useSetAtom(getPortfolioDashboardDataAtom);
   const getPortfolioChartData = useSetAtom(getPortfolioChartDataAtom);
@@ -75,12 +75,11 @@ function DashboardPage() {
   const [riskData] = useAtom(PortfolioRiskAtom);
   const [selectedPortfolioId] = useAtom(selectedPortfolioIdAtom);
 
-  // Local State
   const [interval, setInterval] = useState("1d");
   const [range, setRange] = useState("7d");
   const [marketIndex, setMarketIndex] = useState("nasdaq");
 
-  // Options
+  // Options (생략 없이 그대로 둠)
   const intervalOptions = [
     { label: "1일", value: "1d" },
     { label: "5일", value: "5d" },
@@ -107,11 +106,9 @@ function DashboardPage() {
     { label: "KOSDAQ", value: "kosdaq" },
   ];
 
-  // 데이터 조회 useEffect
+  // API 호출
   useEffect(() => {
     if (!selectedPortfolioId) return;
-
-    // 차트 데이터 갱신
     getPortfolioChartData(range, interval);
     getMarketIndexChartData(range, interval, marketIndex);
   }, [
@@ -125,8 +122,6 @@ function DashboardPage() {
 
   useEffect(() => {
     if (!selectedPortfolioId) return;
-
-    // 초기 데이터 로드 및 포트폴리오 변경 시 갱신
     getPortfolioRiskData(marketIndex);
     getPortfolioDashboardData();
     getPortfolioChartData(range, interval);
@@ -140,9 +135,9 @@ function DashboardPage() {
     getMarketIndexChartData,
     getPortfolioAIReview,
     marketIndex,
-  ]); // 의존성 배열 추가
+  ]);
 
-  // 🚨 [방어 로직] 포트폴리오 ID가 없으면 안내 화면 표시
+  // Case 1: 포트폴리오 ID 자체가 없을 때 (생성 유도)
   if (!selectedPortfolioId) {
     return (
       <div
@@ -180,73 +175,115 @@ function DashboardPage() {
     );
   }
 
-  // 요약 데이터 준비
+  // Case 2: 포트폴리오는 있지만 자산(매입금액)이 0원일 때 (거래내역 추가 유도)
+  // totals 데이터가 로드된 상태(null이 아님)에서 CostBasis가 0이면 빈 깡통으로 간주
+  if (totals && totals.totalPortfolioCostBasis === 0) {
+    return (
+      <div
+        className={style.pageWrapper}
+        style={{
+          height: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ marginBottom: "1rem", color: "#fff" }}>
+          아직 거래 내역이 없습니다.
+        </h2>
+        <p style={{ marginBottom: "2rem", color: "#aaa" }}>
+          매수/매도 내역을 입력하면 AI가 포트폴리오를 분석해드립니다.
+          <br />첫 번째 자산을 추가해보세요!
+        </p>
+        <Link
+          to="/transactions"
+          style={{
+            padding: "12px 24px",
+            backgroundColor: "#28a745",
+            color: "white",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+          }}
+        >
+          거래내역 추가하기
+        </Link>
+      </div>
+    );
+  }
+
+  // 정상 데이터 렌더링
   const summaryItems = totals
     ? [
         {
           key: "totalPortfolioValue",
           label: "총 포트폴리오 가치",
-          value: totals.totalPortfolioValue,
+          value: totals.totalPortfolioValue ?? 0,
           print:
-            totals.totalPortfolioValue.toFixed(2) + " " + totals.baseCurrency,
+            (totals.totalPortfolioValue || 0).toFixed(2) +
+            " " +
+            (totals.baseCurrency || "USD"),
         },
         {
           key: "totalPortfolioCostBasis",
           label: "총 매입 원가",
-          value: totals.totalPortfolioCostBasis,
+          value: totals.totalPortfolioCostBasis ?? 0,
           print:
-            totals.totalPortfolioCostBasis.toFixed(2) +
+            (totals.totalPortfolioCostBasis || 0).toFixed(2) +
             " " +
-            totals.baseCurrency,
+            (totals.baseCurrency || "USD"),
         },
         {
           key: "totalPortfolioProfitLoss",
           label: "총 손익",
-          value: totals.totalPortfolioProfitLoss,
+          value: totals.totalPortfolioProfitLoss ?? 0,
           print:
-            totals.totalPortfolioProfitLoss.toFixed(2) +
+            (totals.totalPortfolioProfitLoss || 0).toFixed(2) +
             " " +
-            totals.baseCurrency,
+            (totals.baseCurrency || "USD"),
         },
         {
           key: "totalPortfolioReturnPercentage",
           label: "총 수익률(%)",
-          value: totals.totalPortfolioReturnPercentage,
-          print: totals.totalPortfolioReturnPercentage.toFixed(2) + "%",
+          value: totals.totalPortfolioReturnPercentage ?? 0,
+          print: (totals.totalPortfolioReturnPercentage || 0).toFixed(2) + "%",
         },
       ]
     : [];
 
-  const riskSummaryItems = riskData
-    ? [
-        {
-          key: "volatility",
-          label: "변동성",
-          value: riskData.metrics.volatility,
-          print: riskData.metrics.volatility.toFixed(2),
-        },
-        {
-          key: "beta",
-          label: "베타",
-          value: riskData.metrics.beta,
-          print: riskData.metrics.beta.toFixed(2),
-        },
-        {
-          key: "maxDrawdown",
-          label: "최대 낙폭",
-          value: riskData.metrics.maxDrawdown,
-          print: riskData.metrics.maxDrawdown.toFixed(2),
-        },
-        {
-          key: "sharpeRatio",
-          label: "샤프 지수",
-          value: riskData.metrics.sharpeRatio,
-          print: riskData.metrics.sharpeRatio.toFixed(2),
-        },
-      ]
-    : [];
+  const riskSummaryItems =
+    riskData && riskData.metrics
+      ? [
+          {
+            key: "volatility",
+            label: "변동성",
+            value: riskData.metrics.volatility ?? 0,
+            print: (riskData.metrics.volatility || 0).toFixed(2),
+          },
+          {
+            key: "beta",
+            label: "베타",
+            value: riskData.metrics.beta ?? 0,
+            print: (riskData.metrics.beta || 0).toFixed(2),
+          },
+          {
+            key: "maxDrawdown",
+            label: "최대 낙폭",
+            value: riskData.metrics.maxDrawdown ?? 0,
+            print: (riskData.metrics.maxDrawdown || 0).toFixed(2),
+          },
+          {
+            key: "sharpeRatio",
+            label: "샤프 지수",
+            value: riskData.metrics.sharpeRatio ?? 0,
+            print: (riskData.metrics.sharpeRatio || 0).toFixed(2),
+          },
+        ]
+      : [];
 
-  // 요약 카드 컴포넌트
   const DashboardSummaryCard = ({
     header,
     data,
@@ -309,7 +346,6 @@ function DashboardPage() {
           </div>
         </div>
 
-        {/* 리스크 및 요약 정보 그리드 (수정된 부분) */}
         <div className={style.riskSummaryGrid}>
           {summaryItems.map((item) => (
             <DashboardSummaryCard
