@@ -1,56 +1,63 @@
 /* src/pages/styles/DashboardPage.module.scss */
 
+// 전체 레이아웃 (배경색 제거, 패딩 제거 -> 공통 스타일 따름)
 .pageWrapper {
-  padding: 2rem;
-  background-color: #111;
-  min-height: 100vh;
-  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+  padding-bottom: 2rem;
+  // background-color: #111;  <-- 제거함
+  // padding: 2rem;           <-- 제거함
+  // min-height: 100vh;       <-- 제거함
 }
 
-.header .title {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #fff;
+// 헤더 타이틀 (다른 페이지와 통일)
+.header {
+  display: flex;
+  justify-content: flex-start; // 좌측 정렬
+  align-items: center;
+  margin-bottom: 0.5rem; // 간격 추가
+
+  .title {
+    font-size: xx-large; // 공통 타이틀 사이즈
+    font-weight: 700;
+    color: #fff;
+  }
 }
 
-/* 1. Filter Bar */
+// 1. Filter Bar
 .filterBar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* 상단 정렬 */
-  background-color: #1e1e1e;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.06); // 공통 카드 배경색과 유사하게
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 1rem 1.5rem;
   border-radius: 12px;
-  flex-wrap: wrap; /* 버튼 많으면 줄바꿈 */
+  flex-wrap: wrap;
   gap: 1rem;
 
   &__group {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-wrap: wrap; /* 내부 버튼들도 줄바꿈 */
+    flex-wrap: wrap;
   }
 
   &__label {
     font-size: 0.9rem;
-    color: #888;
+    color: #8a8f98; // 공통 회색
     font-weight: 600;
     margin-right: 0.5rem;
-    white-space: nowrap; /* 라벨은 줄바꿈 안 함 */
   }
 }
 
-/* 2. KPI Strip */
+// 2. KPI Strip
 .kpiRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 
-  /* 화면이 좁아지면 4개 -> 2개 -> 1개로 변환 */
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -60,14 +67,15 @@
 }
 
 .kpiCard {
-  background-color: #1e1e1e;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   border-left: 4px solid transparent;
-  min-width: 0; /* Flexbox 내부 넘침 방지 */
+  min-width: 0;
 
   &.positive {
     border-left-color: #00ff88;
@@ -81,7 +89,7 @@
 
   &__label {
     font-size: 0.85rem;
-    color: #aaa;
+    color: #8a8f98;
   }
   &__value {
     font-size: 1.5rem;
@@ -95,10 +103,10 @@
   }
 }
 
-/* 3. AI Insight Banner */
+// 3. AI Banner
 .aiBanner {
   display: flex;
-  align-items: flex-start; /* 텍스트 많을 때 위쪽 정렬 */
+  align-items: flex-start;
   background: linear-gradient(
     90deg,
     rgba(0, 191, 255, 0.1) 0%,
@@ -110,11 +118,11 @@
   gap: 1rem;
 
   &__icon {
-    margin-top: 4px; /* 아이콘 위치 보정 */
+    margin-top: 4px;
     background: rgba(0, 0, 0, 0.3);
     padding: 8px;
     border-radius: 50%;
-    flex-shrink: 0; /* 아이콘 찌그러짐 방지 */
+    flex-shrink: 0;
   }
 
   &__text {
@@ -122,7 +130,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    min-width: 0; /* 텍스트 넘침 방지 */
+    min-width: 0;
   }
 
   &__title {
@@ -130,24 +138,18 @@
     font-weight: 700;
     color: #00bfff;
   }
-
   &__desc {
     font-size: 0.95rem;
     color: #ddd;
-    line-height: 1.5;
-    /* ✅ 줄바꿈 허용으로 수정 */
     white-space: normal;
-
-    strong {
-      color: #fff;
-      font-weight: 700;
-    }
+    line-height: 1.5;
   }
 }
 
-/* 4. Main Chart */
+// 4. Main Chart
 .mainChartSection {
-  background-color: #1e1e1e;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1.5rem;
   height: 400px;
@@ -161,14 +163,14 @@
   }
 }
 
-/* 5. Bottom Analysis */
+// 5. Analysis Grid
 .analysisGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr; /* 모바일은 세로로 */
+    grid-template-columns: 1fr;
   }
 }
 
@@ -178,7 +180,7 @@
   margin-bottom: 1rem;
 }
 
-/* 리스크 그리드 */
+// 좌측 리스크 그리드
 .riskGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -190,14 +192,14 @@
 }
 
 .riskCard {
-  background-color: #1e1e1e;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1.2rem;
   min-height: 160px;
   display: flex;
   flex-direction: column;
-
-  /* 내용물 넘침 방지 */
+  justify-content: space-between; // 내용 없어도 높이 유지
   overflow: hidden;
 
   &__header {
@@ -214,36 +216,78 @@
       color: #777;
     }
   }
+
+  // 데이터 없을 때 메시지 스타일
+  &__empty {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+  }
 }
 
-/* 매트릭스 */
+// 우측 매트릭스
 .matrixCard {
-  background-color: #1e1e1e;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1rem;
-  height: 340px; /* 리스크 카드 2개 높이 합과 비슷하게 */
+  // height: 340px;  <-- 🔴 삭제 (고정 높이 제거)
+  flex-grow: 1; // 🟢 추가 (남은 공간 꽉 채우기)
+
+  // 기존 중앙 정렬 속성 유지
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #ddd;
+  }
+
+  // 빈 상태 스타일 (기존 유지)
+  &__empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    gap: 1rem;
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
 }
 
-/* 유틸리티 */
+// 유틸리티
 .buttonRail {
   display: flex;
-  background: #111;
+  // background: #111; <-- 제거
   padding: 4px;
   border-radius: 8px;
   gap: 4px;
-  flex-wrap: wrap; /* 버튼 많으면 줄바꿈 */
+  flex-wrap: wrap;
 }
 
 .button {
   background: transparent;
   border: none;
-  color: #777;
+  color: #888;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
   font-weight: 600;
-  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
+  white-space: nowrap;
 
   &.active {
     background: #00bfff;
@@ -251,6 +295,7 @@
   }
   &:hover:not(.active) {
     color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -264,5 +309,12 @@
 .chartContainer {
   flex-grow: 1;
   width: 100%;
-  min-height: 100px; /* 차트 최소 높이 확보 */
+  min-height: 100px;
+}
+
+.riskContainer,
+.matrixContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
