@@ -11,6 +11,10 @@ import {
 } from "./atoms";
 import { RESET } from "jotai/utils";
 
+// 🟢 [추가됨] 거래내역 갱신을 위해 import
+import { getAllTransactionAtom } from "../transaction/action";
+import { AllTransactionAtom } from "../transaction/atom";
+
 /** 포트폴리오의 종목 불러오기 */
 export const getPortfolioById = atom(null, async (get, set) => {
   try {
@@ -114,24 +118,26 @@ export const deleteCurrentPortfolioAtom = atom(null, async (get, set) => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    // 2. 전체 목록 다시 불러오기
+    // 2. 전체 포트폴리오 목록 다시 불러오기
     await set(getAllPortfoliosAtom);
 
-    // 3. 갱신된 목록 확인
+    // 3. 갱신된 목록 확인 후 처리
     const portfolios = get(allPortfolios);
 
     if (Array.isArray(portfolios) && portfolios.length > 0) {
-      // 남은 게 있으면 첫 번째 녀석으로 갈아타기
+      // A. 남은 포트폴리오가 있는 경우 -> 다음 포트폴리오로 갈아타기
       const nextId = portfolios[0]._id;
       set(selectedPortfolioIdAtom, nextId);
 
-      // ⭐️ 중요: 갈아탄 녀석의 데이터를 즉시 로드해야 함!
-      await set(getPortfolioItemsByIdAtom, nextId);
+      // 데이터 갱신
+      await set(getPortfolioItemsByIdAtom, nextId); // 자산 목록 갱신
+      await set(getAllTransactionAtom); // 🟢 [추가] 거래내역도 갱신!
     } else {
-      // 남은 게 없으면 싹 비우기 (초기화)
+      // B. 남은 포트폴리오가 없는 경우 -> 싹 비우기
       set(selectedPortfolioIdAtom, null);
-      set(portfolioItems, []); // ⭐️ 화면에 남은 주식 목록 제거
-      set(selectedPortfolio, null); // ⭐️ 상단 타이틀 제거
+      set(portfolioItems, []);
+      set(selectedPortfolio, null);
+      set(AllTransactionAtom, null); // 🟢 [추가] 거래내역 화면 비우기
     }
   } catch (error) {
     console.error("포트폴리오 삭제 실패: ", error);
