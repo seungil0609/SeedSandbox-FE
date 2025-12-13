@@ -1,3 +1,103 @@
-@use '../../styles/title.scss';
-@use '../../styles/wrappers.scss';
-@use '../styles/CommunityPage.module.scss';
+@use "../../styles/title.scss";
+@use "../../styles/wrappers.scss";
+
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2rem;
+  width: 100%;
+  // 🔴 [삭제] 너비 제한 제거 (다른 페이지와 동일하게 전체 폭 사용)
+  // max-width: 1000px;
+  // margin: 0 auto;
+
+  // 🟢 [추가] 최소 높이 확보 (다른 페이지와 통일)
+  min-height: 80vh;
+}
+
+.header {
+  margin-bottom: 2rem;
+  // 🟢 [추가] 헤더 레이아웃 통일 (필요 시)
+  display: flex;
+  align-items: center;
+}
+
+// 리스트 컨테이너
+.resultList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  flex: 1; // 남은 공간 채우기
+}
+
+// 결과 카드 아이템 (가로바 형태)
+.resultCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  color: #fff;
+
+  // 호버 효과
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// 내부 정보 스타일링
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.symbol {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.name {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+// 거래소 뱃지
+.exchangeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+// 결과 없음 메시지
+.emptyState {
+  text-align: center;
+  padding: 4rem 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+}

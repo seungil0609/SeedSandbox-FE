@@ -30,7 +30,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.06); // 공통 카드 배경색과 유사하게
+  background-color: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 1rem 1.5rem;
   border-radius: 12px;
@@ -44,9 +44,10 @@
     flex-wrap: wrap;
   }
 
+  // 🟢 라벨 색상 유지 (회색)
   &__label {
     font-size: 0.9rem;
-    color: #8a8f98; // 공통 회색
+    color: #8a8f98;
     font-weight: 600;
     margin-right: 0.5rem;
   }
@@ -271,7 +272,6 @@
 // 유틸리티
 .buttonRail {
   display: flex;
-  // background: #111; <-- 제거
   padding: 4px;
   border-radius: 8px;
   gap: 4px;
@@ -281,21 +281,28 @@
 .button {
   background: transparent;
   border: none;
-  color: #888;
+  // 기본 글씨색: 흰색 (요청사항)
+  color: #ffffff;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
   font-weight: 600;
   white-space: nowrap;
+  transition: all 0.2s ease;
 
-  &.active {
-    background: #00bfff;
-    color: #fff;
-  }
+  // 🟢 [수정] 호버 시: 배경 없이 글씨만 하늘색
   &:hover:not(.active) {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent; // 배경 없음
+    color: #00bfff; // 글씨 하늘색
+  }
+
+  // 🟢 [수정] 선택된 상태(Active): 배경 없이 글씨만 하늘색 (커뮤니티 스타일)
+  &.active {
+    background: transparent; // 배경 제거
+    color: #00bfff; // 글씨 하늘색
+    // (선택사항) 밑줄이나 굵기 강조가 필요없다면 여기서 끝
+    // font-weight: 700; // 굵게 강조 가능
   }
 }
 
