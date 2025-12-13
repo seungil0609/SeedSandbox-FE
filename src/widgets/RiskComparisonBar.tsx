@@ -20,13 +20,13 @@ function RiskComparisonBar({
     {
       category: "내 포트폴리오",
       value: pValue,
-      color: "#00bfff",
+      color: "#00bfff", // 내 포트폴리오 색상 (파랑)
       originalValue: portfolioValue,
     },
     {
       category: benchmarkName,
       value: bValue,
-      color: "#555555",
+      color: "#ff7f50", // 🟢 [수정됨] 시장 지수 색상 (주황 - 차트와 통일)
       originalValue: benchmarkValue,
     },
   ];
@@ -37,7 +37,6 @@ function RiskComparisonBar({
       keys={["value"]}
       indexBy="category"
       layout="horizontal"
-      // margin에서 bottom을 줄여서 공간을 아낍니다 (20 -> 10)
       margin={{ top: 0, right: 30, bottom: 10, left: 100 }}
       padding={0.4}
       valueScale={{ type: "linear" }}
@@ -47,11 +46,10 @@ function RiskComparisonBar({
       enableGridY={false}
       axisTop={null}
       axisRight={null}
-      // 🟢 [수정됨] 아래 X축 눈금(숫자들)을 아예 없앱니다.
       axisBottom={null}
       axisLeft={{
         tickSize: 0,
-        tickPadding: 10, // 글자와 막대 사이 간격 살짝 조정
+        tickPadding: 10,
         tickRotation: 0,
       }}
       enableLabel={true}
@@ -62,7 +60,6 @@ function RiskComparisonBar({
       labelTextColor={{ from: "color", modifiers: [["darker", 2]] }}
       theme={{
         text: { fill: "#aaa", fontSize: 11, fontWeight: 600 },
-        // axis 설정은 axisLeft에만 적용됨
         axis: { ticks: { text: { fill: "#aaa" } } },
         grid: { line: { stroke: "#333", strokeDasharray: "2 2" } },
         tooltip: {
