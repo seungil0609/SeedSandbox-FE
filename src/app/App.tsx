@@ -20,16 +20,31 @@ import { useFirebaseAuth } from "../store/auth/firebase";
 import TransactionPage from "../pages/TransactionPage";
 import SearchResultPage from "../pages/SearchResultPage";
 
+// 1. [로그인 필수] 로그인이 안 되어 있으면 로그인 페이지로 튕겨냄
 export function RequireAuth() {
   const isAuth = useAtomValue(isAuthenticatedAtom);
   if (isAuth === undefined) {
-    return null; // 로딩 중
+    return null; // 로딩 중 (스피너 등을 넣어도 좋음)
   }
   if (isAuth === false) {
-    // 로그인이 안 되어 있으면 로그인 페이지로 튕겨냄
     return <Navigate to="/signin" replace />;
   }
   return <Outlet />;
+}
+
+// 2. [추가됨] 루트('/') 접속 시 분기 처리 컴포넌트
+function RootRedirector() {
+  const isAuth = useAtomValue(isAuthenticatedAtom);
+
+  if (isAuth === undefined) {
+    return null; // 로딩 중
+  }
+  // 로그인 상태면 대시보드로, 아니면 로그인 페이지로
+  return isAuth ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/signin" replace />
+  );
 }
 
 function App() {
@@ -37,18 +52,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. 메인('/') 접속 시 무조건 랜딩 페이지(로그인 유도) 보여주기 */}
-        <Route path="/" element={<LandingPage />} />
+        {/* 3. 메인('/') 접속 시 로그인 여부에 따라 자동 이동 */}
+        <Route path="/" element={<RootRedirector />} />
 
-        {/* 2. 로그인/회원가입 페이지 */}
-        <Route path="/landing" element={<LandingPage />} />
+        {/* 로그인/회원가입 페이지 */}
+        {/* LandingPage는 현재 로그인된 헤더를 보여주는 문제가 있으므로 사용하지 않거나 수정 필요 */}
+        {/* <Route path="/landing" element={<LandingPage />} /> */}
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 
-        {/* 3. 로그인 해야만 접근 가능한 페이지들 */}
+        {/* 로그인 해야만 접근 가능한 페이지들 */}
         <Route element={<MainPage />}>
           <Route element={<RequireAuth />}>
-            {/* 대시보드는 이제 /dashboard 주소로 이동 */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/transactions" element={<TransactionPage />} />
