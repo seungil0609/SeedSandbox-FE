@@ -19,7 +19,7 @@ function Header() {
       <div className={style.rowWrapper}>
         {/* 🔻 [수정됨] a 태그 -> span 태그로 변경, href 제거 */}
         <span className={style.logo} style={{ cursor: "default" }}>
-          SeedUp
+          SeedSandbox
         </span>
         <SearchBar />
       </div>

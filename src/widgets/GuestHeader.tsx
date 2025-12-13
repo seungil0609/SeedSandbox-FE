@@ -6,7 +6,7 @@ function GuestHeader() {
     <div className={style.header}>
       {/* 🔻 [수정됨] a -> span, href 제거, 커서 기본값 설정 */}
       <span className={style.logo} style={{ cursor: "default" }}>
-        SeedUp
+        SeedSandbox
       </span>
       <button className={style.mobileMenuButton}>
         <Menu className={style.mobileMenuButton__icon} />

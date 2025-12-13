@@ -115,8 +115,8 @@ function SignUpPage() {
       <GuestHeader />
       <div className={style.pageWrapper}>
         <section className={style.signUpSection}>
-          <h1>SeedUp과 함께해요</h1>
-          <p>투자자 커뮤니티에 가입하고 나만의 포트폴리오를 시작해보세요</p>
+          <h1>SeedSandbox과 함께해요</h1>
+          <p>나만의 포트폴리오를 시작해보세요</p>
 
           <form
             className={style.form}
@@ -165,7 +165,9 @@ function SignUpPage() {
                   onChange={(e) => setAgree(e.target.checked)}
                   required
                 />
-                <label htmlFor="terms">SeedUp의 이용약관에 동의합니다</label>
+                <label htmlFor="terms">
+                  SeedSandbox의 이용약관에 동의합니다
+                </label>
               </div>
               <label className={style.status}>{status}</label>
             </div>

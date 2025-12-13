@@ -1,122 +1,245 @@
-@use '../../styles/title.scss';
-@use '../../styles/wrappers.scss';
+@use "../../styles/title.scss";
+@use "../../styles/wrappers.scss";
+@use "../styles/TransactionPage.module.scss" as trans;
 
-// 페이지 래퍼 및 헤더
+// 헤더
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-.writeButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.85);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
+// 전체 레이아웃 (사이드바 + 리스트)
+.contentContainer {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
 
-    &:hover {
-        border-color: #00bfff;
-        background: #00bfff;
-        color: #fff;
-        box-shadow: 0 6px 18px rgba(0, 191, 255, 0.15);
-        transform: translateY(-1px);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
-    }
-
-    &:active {
-        transform: translateY(0);
-        filter: brightness(0.95);
-    }
-}
-
-.cardList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-}
-
-.card {
-    display: flex;
+  @media (max-width: 800px) {
     flex-direction: column;
-    min-height: 200px;
-    max-height: 200px;
-    align-items: flex-start;
-    text-align: left;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    padding: 1rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-
-    &:hover {
-        border-color: #00bfff;
-        box-shadow: 0 6px 18px rgba(0, 191, 255, 0.15);
-        transform: translateY(-1px);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
-    }
+    gap: 1rem;
+  }
 }
 
-.cardHeader {
+// 사이드바
+.sidebar {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: sticky;
+  top: 1rem;
+
+  @media (max-width: 800px) {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.65);
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    position: static;
+  }
 }
 
-.cardBoardType {
+// 🟢 [수정] 사이드바 아이템 (포트폴리오 페이지와 스타일 통일)
+.sidebarItem {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  // 호버 시
+  &:hover {
+    background: rgba(0, 191, 255, 0.12);
+    color: #ffffff;
+  }
+
+  // 🟢 [수정] 선택된 상태: 얕은 하늘색 배경 + 흰색 글씨
+  &.active {
+    // 배경: 연한 하늘색 (투명도 0.2)
+    background: rgba(0, 191, 255, 0.2);
+
+    // 글씨: 흰색
+    color: #ffffff;
+
+    // 모바일 대응
+    @media (max-width: 800px) {
+      border-left: none;
+      border-bottom: 2px solid #00bfff;
+    }
+  }
+}
+
+// 글쓰기 버튼
+// 🟢 [수정] 글쓰기 버튼 (은은한 효과로 변경)
+.writeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  // 기본 상태: 어두운 투명 배경
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid transparent; // 테두리 공간 확보
+
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem; // 폰트 사이즈 유지
+  transition: all 0.2s ease;
+
+  // 호버 시: 배경만 살짝 밝게 (색상 변화 X)
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  // 클릭 시 반응
+  &:active {
+    transform: translateY(1px);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+// 🟢 [수정] 리스트 컨테이너
+.listContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+// 🟢 [수정] 리스트 아이템 (한 줄 바 형태)
+.listItem {
+  display: grid;
+  // [배지] [제목] [작성자] [날짜] [삭제버튼]
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 1.5rem;
+
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // ❗ 주의: listItem은 이제 button 태그가 아니라 div로 바뀝니다. (버튼 중첩 방지)
+  // 따라서 hover 효과는 그대로 유지
+  &:hover {
     background: rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
-    padding: 0.15rem 0.5rem;
-    font-weight: 600;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: auto 1fr auto; // 모바일 구조 변경
+    gap: 0.5rem;
+
+    // 모바일 레이아웃 디테일 조정 필요
+    .itemAuthor,
+    .itemDate {
+      display: none;
+    } // 예시: 공간 부족 시 일부 숨김
+  }
 }
 
-.cardDate {
-    font-variant-numeric: tabular-nums;
+.badge {
+  background: rgba(0, 191, 255, 0.15);
+  color: #00bfff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.cardTitle {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0.25rem 0 0.5rem;
+.itemTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.cardMeta {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.65);
-    margin-bottom: 0.5rem;
+.itemAuthor {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
 }
 
-.cardAuthor {
-    font-weight: 600;
+.itemDate {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: right;
 }
 
-.cardContent {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.8);
-    overflow: hidden;
-    display: -webkit-box;
+.emptyState {
+  color: #666;
+  text-align: center;
+  padding: 4rem;
+}
+// 🟢 [신규] 삭제 버튼 (TransactionPage 스타일 참고)
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+  color: #c02525; // 기본 붉은색
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // 삭제 아이콘 크기
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  // 호버 시 은은하게 (빨강 배경 X)
+  &:hover {
+    background: rgba(192, 37, 37, 0.12);
+    color: #ff6666;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+// 🟢 [추가] 사이드바 헤더 스타일
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem 0.5rem;
+  color: #ffffff; // 흰색
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 800px) {
+    display: none;
+  }
 }

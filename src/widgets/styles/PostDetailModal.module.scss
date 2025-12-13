@@ -1,257 +1,275 @@
 .overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(40, 40, 40, 0.35);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 9999;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 40, 40, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.08);
-    width: 720px;
-    max-width: calc(100% - 2rem);
-    padding: 2rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    position: relative;
-    color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+  width: 720px;
+  max-width: calc(100% - 2rem);
+  padding: 2rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
 }
 
 .closeButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.85);
-    border-radius: 8px;
-    width: 2rem;
-    height: 2rem;
-    transition: all ease 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
-    &:hover {
-        border-color: #00bfff;
-        background: #00bfff;
-        color: #fff;
-    }
+  // 기본 상태
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
 
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.35);
-    }
+  border-radius: 8px;
+  width: 2rem;
+  height: 2rem;
+  transition: all ease 0.2s;
+
+  // 🟢 [수정] 호버 시 파란색 제거 -> 은은한 회색 톤으로 변경
+  &:hover {
+    background: rgba(255, 255, 255, 0.15); // 밝기만 증가
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35); // 포커스 링도 흰색 계열로 변경
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .boardType {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
-    padding: 0.15rem 0.5rem;
-    font-weight: 600;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  font-weight: 600;
 }
 
 .author {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .date {
-    font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums;
 }
 
 .content {
-    white-space: pre-wrap;
-    line-height: 1.6;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    padding: 1rem;
-    max-height: 50vh;
-    overflow: auto;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 50vh;
+  overflow: auto;
 }
 
 .commentSection {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .commentTitle {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0.5rem 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.5rem 0 0;
 }
 
 .commentForm {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .commentInput {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    font-size: 14px;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.95);
-    transition: all 0.2s ease;
-    resize: vertical;
-    min-height: 80px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.95);
+  transition: all 0.2s ease;
+  resize: vertical;
+  min-height: 80px;
 
-    &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
 
-    &:focus {
-        outline: none;
-        border-color: rgba(255, 255, 255, 0.35);
-        background: rgba(255, 255, 255, 0.12);
-    }
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
+  }
 }
 
 .commentActions {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .button__save {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    background: rgba(0, 191, 255, 0.08);
-    color: #00bfff;
-    transition: all ease 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
 
-    &:hover {
-        background: #00bfff;
-        color: #fff;
-    }
+  // 기본 상태: 연한 파란 틴트
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transition: all ease 0.2s;
 
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        filter: grayscale(0.2);
-    }
+  // 🟢 [수정] 호버 시 꽉 찬 파란색 제거 -> 은은하게 진해짐
+  &:hover {
+    background: rgba(255, 255, 255, 0.18); // 밝기만 증가 (파랑색 X)
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
-
 .commentList {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-height: 40vh;
-    overflow: auto;
-    padding-right: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 40vh;
+  overflow: auto;
+  padding-right: 0.25rem;
 }
 
 .commentItem {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem;
 }
 
 .commentHeader {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; // 왼쪽 정렬
-    gap: 0.5rem; // 작성자-날짜 간격
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; // 왼쪽 정렬
+  gap: 0.5rem; // 작성자-날짜 간격
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .commentAuthor {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .commentDate {
-    font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums;
 }
 
 .commentContent {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .commentEmpty {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
-    text-align: center;
-    padding: 0.75rem 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 0.75rem 0;
 }
 
 .commentDeleteButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    cursor: pointer;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #c02525;
-    border-radius: 6px;
-    padding: 0.25rem 0.5rem;
-    transition: all 0.2s ease;
-    margin-left: auto; // 오른쪽 끝으로 배치
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    svg {
-        width: 16px;
-        height: 16px;
-    }
+  background: transparent;
+  border: none;
+  color: #c02525; // 기본 붉은색
 
-    &:hover {
-        background: rgba(192, 37, 37, 0.12);
-        border-color: rgba(192, 37, 37, 0.35);
-        color: #fff;
-    }
+  width: 32px; // 아이콘 버튼 크기 고정 (정사각형 느낌)
+  height: 32px;
+  padding: 0; // 내부 패딩 제거 (중앙 정렬 위함)
 
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(192, 37, 37, 0.35);
-    }
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto; // 우측 끝 배치
 
-    &:active {
-        transform: translateY(1px);
-    }
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  // 호버 시 은은하게 (빨강 배경 X)
+  &:hover {
+    background: rgba(192, 37, 37, 0.12);
+    color: #ff6666;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(192, 37, 37, 0.35);
+  }
 }

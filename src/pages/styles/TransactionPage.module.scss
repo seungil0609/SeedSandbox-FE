@@ -1,9 +1,222 @@
-@use './PortfolioPage.module.scss';
+@use "../../styles/title.scss";
+@use "../../styles/wrappers.scss";
 
-.buy {
-    color: #218838;
+// 🟢 [중요] 레이아웃 깨짐 방지를 위한 Flex 설정
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2rem;
+  width: 100%;
+  min-height: 80vh; // 최소 높이 확보
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: xx-large;
+  font-weight: 700;
+  color: #fff;
+}
+
+// 🟢 [복구] 사이드바 + 메인콘텐츠 레이아웃
+.contentContainer {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+
+  @media (max-width: 850px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+// 🟢 [복구] 사이드바 스타일
+.sidebar {
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: sticky;
+  top: 1rem;
+
+  @media (max-width: 850px) {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    position: static;
+    align-items: center;
+  }
+}
+
+// 🟢 [요청반영] 사이드바 헤더 글씨 흰색
+.sidebarHeader {
+  padding: 0 0.5rem 0.5rem;
+  color: #ffffff; // 흰색
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+// 사이드바 아이템 (Flex로 변경하여 이름과 버튼 양옆 배치)
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  text-align: left;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(0, 191, 255, 0.12);
+    color: #ffffff;
+  }
+
+  &.active {
+    background: rgba(0, 191, 255, 0.2);
+    color: #ffffff;
+
+    @media (max-width: 850px) {
+      border-left: none;
+      border-bottom: 2px solid #00bfff;
+    }
+  }
+}
+
+.sidebarName {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 8px;
+}
+
+// 🟢 [신규] 사이드바 내 추가(+) 버튼
+.sidebarAddBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: inherit; // 부모 색상 상속
+  opacity: 0.6;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+    opacity: 1;
+  }
+}
+
+// 🟢 [복구] 메인 콘텐츠 (테이블 영역)
+.mainContent {
+  flex: 1;
+  width: 100%;
+}
+
+// 테이블 스타일 (PortfolioPage와 동일)
+.portfolioTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: transparent;
+
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    // 🟢 [수정] 흐릿한 구분선
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  th {
+    font-weight: 600;
+    color: #eee;
+    font-size: 0.9rem;
+  }
+
+  td {
+    color: #ddd;
+    font-size: 0.95rem;
+  }
+
+  tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+}
+
+// 상단 버튼
+.createButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// 거래내역 테이블 내 삭제 버튼
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #c02525;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all ease 0.2s;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: rgba(192, 37, 37, 0.12);
+    color: #ff6666;
+  }
+}
+
+.buy {
+  color: #218838;
+  font-weight: 600;
+}
 .sell {
-    color: #c02525;
+  color: #c02525;
+  font-weight: 600;
 }

@@ -38,7 +38,7 @@ function GlobalLoader() {
       }}
     >
       <div className="loader"></div>
-      <h2>SeedUp 로딩 중...</h2>
+      <h2>SeedSandbox 로딩 중...</h2>
     </div>
   );
 }
