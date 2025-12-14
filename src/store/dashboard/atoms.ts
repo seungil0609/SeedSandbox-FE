@@ -1,10 +1,11 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-// 🟢 [추가] 개별 자산 리스트를 가져오기 위해 import (경로 확인 필요)
-import { portfolioItems } from "../portfolios/atoms";
 
-// 🟢 [추가] 환율 상수 (1 USD = 1450 KRW 가정)
-export const EXCHANGE_RATE = 1450;
+// 🟢 [수정] 개별 자산 리스트 import 제거 (더 이상 필요 없음)
+// import { portfolioItems } from "../portfolios/atoms";
+
+// 🟢 [수정] 프론트엔드용 고정 환율 상수 제거 (백엔드 데이터 사용)
+// export const EXCHANGE_RATE = 1450;
 
 export interface PortfolioRiskData {
   metrics: {
@@ -25,6 +26,8 @@ export interface PortfolioRiskData {
     maxDrawdown: number;
     sharpeRatio: number;
   };
+  // 🟢 [추가] 이 부분이 없어서 에러가 났었습니다.
+  excluded?: string[];
 }
 
 export interface PortfolioDashboardData {
@@ -73,67 +76,19 @@ export const dashboardRangeAtom = atomWithStorage<string>(
   "7d"
 );
 
-// 🟢 [핵심 수정] 총 자산 가치를 아이템 리스트에서 직접 재계산하는 로직
+// 🟢 [핵심 수정] 프론트엔드 재계산 로직 제거 -> 백엔드 데이터 그대로 반환
 export const PortfolioTotalsAtom = atom((get) => {
+  // 1. 백엔드에서 받아온 대시보드 데이터 (getPortfolioSummary 결과)
   const d = get(PortfolioDashboardAtom);
-  const items = get(portfolioItems); // 현재 선택된 포트폴리오의 자산 리스트
 
   if (!d) return null;
 
-  // 자산 리스트가 없으면 기존 대시보드 데이터 반환
-  if (!items || items.length === 0) {
-    return {
-      baseCurrency: d.baseCurrency,
-      totalPortfolioValue: d.totalPortfolioValue,
-      totalPortfolioCostBasis: d.totalPortfolioCostBasis,
-      totalPortfolioProfitLoss: d.totalPortfolioProfitLoss,
-      totalPortfolioReturnPercentage: d.totalPortfolioReturnPercentage,
-    };
-  }
-
-  // 1. 기준 통화 확인
-  const baseCurrency = d.baseCurrency; // 'USD' or 'KRW'
-
-  // 2. 총 자산 가치 재계산 (현재가 기준)
-  const calculatedTotalValue = items.reduce((sum, item) => {
-    let itemValue = item.currentPrice * item.quantity;
-    const itemCurrency = item.currency; // 자산의 통화 ('KRW', 'USD' ...)
-
-    // 환율 적용 로직
-    if (baseCurrency === "USD" && itemCurrency === "KRW") {
-      itemValue = itemValue / EXCHANGE_RATE; // 원화 자산을 달러로 (나누기)
-    } else if (baseCurrency === "KRW" && itemCurrency === "USD") {
-      itemValue = itemValue * EXCHANGE_RATE; // 달러 자산을 원화로 (곱하기)
-    }
-    // 통화가 같거나(USD-USD) 그 외의 경우 그대로 합산
-    return sum + itemValue;
-  }, 0);
-
-  // 3. 총 매수 원금 재계산 (평균단가 기준)
-  const calculatedTotalCost = items.reduce((sum, item) => {
-    let itemCost = item.averagePrice * item.quantity;
-    const itemCurrency = item.currency;
-
-    if (baseCurrency === "USD" && itemCurrency === "KRW") {
-      itemCost = itemCost / EXCHANGE_RATE;
-    } else if (baseCurrency === "KRW" && itemCurrency === "USD") {
-      itemCost = itemCost * EXCHANGE_RATE;
-    }
-    return sum + itemCost;
-  }, 0);
-
-  // 4. 수익금 및 수익률 재계산
-  const calculatedProfitLoss = calculatedTotalValue - calculatedTotalCost;
-  const calculatedReturnRate =
-    calculatedTotalCost === 0
-      ? 0
-      : (calculatedProfitLoss / calculatedTotalCost) * 100;
-
+  // 2. 백엔드에서 이미 환율 계산된 정확한 값을 그대로 반환합니다.
   return {
-    baseCurrency: baseCurrency,
-    totalPortfolioValue: calculatedTotalValue, // 🟢 재계산된 총 자산
-    totalPortfolioCostBasis: calculatedTotalCost, // 🟢 재계산된 원금
-    totalPortfolioProfitLoss: calculatedProfitLoss, // 🟢 재계산된 수익금
-    totalPortfolioReturnPercentage: calculatedReturnRate, // 🟢 재계산된 수익률
+    baseCurrency: d.baseCurrency,
+    totalPortfolioValue: d.totalPortfolioValue,
+    totalPortfolioCostBasis: d.totalPortfolioCostBasis,
+    totalPortfolioProfitLoss: d.totalPortfolioProfitLoss,
+    totalPortfolioReturnPercentage: d.totalPortfolioReturnPercentage,
   };
 });
