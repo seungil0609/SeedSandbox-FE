@@ -8,12 +8,12 @@ import {
   getPortfolioDashboardDataAtom,
   getPortfolioRiskDataAtom,
 } from "../store/dashboard/action";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   PortfolioAIReviewAnswerAtom,
   PortfolioRiskAtom,
   PortfolioTotalsAtom,
-  dashboardMarketIndexAtom, // 🟢 저장된 시장 지수 Atom
+  dashboardMarketIndexAtom,
   dashboardRangeAtom,
 } from "../store/dashboard/atoms";
 import HistoricalLineChart from "../widgets/HistoricalLineChart";
@@ -64,7 +64,6 @@ function DashboardPage() {
   const [riskData] = useAtom(PortfolioRiskAtom);
   const [selectedPortfolioId] = useAtom(selectedPortfolioIdAtom);
 
-  // 🟢 [수정] 로컬 state 대신 저장된 atom 사용
   const [marketIndex, setMarketIndex] = useAtom(dashboardMarketIndexAtom);
   const [range, setRange] = useAtom(dashboardRangeAtom);
 
@@ -89,8 +88,8 @@ function DashboardPage() {
   const getBenchmarkName = () =>
     indexOptions.find((opt) => opt.value === marketIndex)?.label || "Market";
 
-  // 🟢 [수정] interval은 range에 따라 자동 설정되므로 고정값('1d') 전달
-  // (백엔드에서 1y 이상일 때 자동 최적화하도록 수정했으므로 1d로 보내도 됨)
+  const excludedAssets = riskData?.excluded || [];
+
   useEffect(() => {
     if (!selectedPortfolioId) return;
     getPortfolioChartData(range, "1d");
@@ -120,7 +119,6 @@ function DashboardPage() {
     );
   }
 
-  // 1. KPI 데이터 (영어 서브 텍스트 제거, 숫자에 색상 적용)
   const kpiItems = totals
     ? [
         {
@@ -128,7 +126,7 @@ function DashboardPage() {
           value: `${
             totals.baseCurrency
           } ${totals.totalPortfolioValue.toLocaleString()}`,
-          status: "neutral", // 자산 가치는 색상 X
+          status: "neutral",
         },
         {
           label: "총 수익",
@@ -167,9 +165,6 @@ function DashboardPage() {
         { label: "수익률", value: "-", status: "neutral" },
       ];
 
-  // 2. 리스크 데이터 (데이터가 없어도 0으로 채워서 표시)
-  // 현재 API 구조상 transactions가 없으면 riskData가 null일 수 있음.
-  // 이 경우 0으로 채운 더미 데이터를 보여줌.
   const hasRiskData = riskData && riskData.metrics && riskData.benchmark;
 
   const riskComparisonItems = [
@@ -185,7 +180,7 @@ function DashboardPage() {
       label: "베타 (Beta)",
       desc: "시장 민감도 (기준 1.0)",
       portfolioValue: hasRiskData ? riskData.metrics.beta : 0,
-      benchmarkValue: 1.0, // 베타 기준값은 항상 1
+      benchmarkValue: 1.0,
     },
     {
       key: "maxDrawdown",
@@ -212,7 +207,6 @@ function DashboardPage() {
         <div className={style.title}>대시보드</div>
       </div>
 
-      {/* 필터 바 (간격 버튼 제거됨) */}
       <div className={style.filterBar}>
         <div className={style.filterBar__group}>
           <span className={style.filterBar__label}>비교 지수</span>
@@ -232,12 +226,10 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* KPI Strip */}
       <div className={style.kpiRow}>
         {kpiItems.map((kpi, idx) => (
           <div key={idx} className={style.kpiCard}>
             <span className={style.kpiCard__label}>{kpi.label}</span>
-            {/* 🟢 수정: 숫자에 직접 색상 클래스 적용 */}
             <span
               className={`${style.kpiCard__value} ${
                 kpi.status === "positive"
@@ -253,7 +245,6 @@ function DashboardPage() {
         ))}
       </div>
 
-      {/* AI Insight */}
       <div className={style.aiBanner}>
         <div className={style.aiBanner__icon}>
           <Bot size={24} color="#00bfff" />
@@ -276,15 +267,12 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Chart */}
       <div className={style.mainChartSection}>
         <h3>포트폴리오 가치 추이 (vs {getBenchmarkName()})</h3>
         <HistoricalLineChart range={range} />
       </div>
 
-      {/* Bottom Analysis */}
       <div className={style.analysisGrid}>
-        {/* 리스크 그리드 (데이터 없어도 항상 표시, 값은 0) */}
         <div className={style.riskContainer}>
           <h3 className={style.sectionTitle}>리스크 상세 분석</h3>
           <div className={style.riskGrid}>
@@ -294,7 +282,6 @@ function DashboardPage() {
                   <h4>{item.label}</h4>
                   <span>{item.desc}</span>
                 </div>
-                {/* 차트 항상 렌더링 (0값 처리됨) */}
                 <div className={style.chartContainer}>
                   <RiskComparisonBar
                     portfolioValue={item.portfolioValue}
@@ -308,12 +295,53 @@ function DashboardPage() {
           </div>
         </div>
 
-        {/* 매트릭스 (거래내역 없으면 텍스트 표시) */}
+        {/* 상관관계 매트릭스 */}
         <div className={style.matrixContainer}>
-          <h3 className={style.sectionTitle}>자산 상관관계</h3>
+          <div className={style.sectionHeader}>
+            <h3 className={style.sectionTitle}>자산 상관관계</h3>
+          </div>
+
           <div className={style.matrixCard}>
             {hasTransactions ? (
-              <CorrelationMatrixChart />
+              <>
+                <div
+                  style={{
+                    padding: "0 0 10px 0",
+                    fontSize: "0.85rem",
+                    color: "rgba(255,255,255,0.5)",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    marginBottom: "10px",
+                  }}
+                >
+                  1.0에 가까울수록 함께 움직이고, -1.0에 가까울수록 반대로
+                  움직입니다. (0은 관계없음)
+                </div>
+
+                {/* 🟢 [수정] 차트 컨테이너에 명시적인 높이 부여 (중요!) */}
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    flex: 1,
+                    minHeight: 0,
+                  }}
+                >
+                  <CorrelationMatrixChart />
+                </div>
+
+                {excludedAssets.length > 0 && (
+                  <div className={style.excludedList}>
+                    <span className={style.excludedLabel}>
+                      ⚠️ 분석 제외 (데이터 부족 또는 섹터 미정):
+                    </span>
+                    {excludedAssets.map((ticker) => (
+                      <span key={ticker} className={style.excludedBadge}>
+                        {ticker}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <div className={style.matrixCard__empty}>
                 <p>거래 내역을 추가하면</p>

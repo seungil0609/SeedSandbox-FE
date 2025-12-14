@@ -167,8 +167,12 @@
 // 5. Analysis Grid
 .analysisGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+  /* 🟢 [핵심] 양쪽 셀의 높이를 강제로 동일하게 맞춤 */
+  align-items: stretch;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -181,15 +185,24 @@
   margin-bottom: 1rem;
 }
 
-// 좌측 리스크 그리드
+/* =========================================
+   🟢 [왼쪽] 리스크 컨테이너 & 그리드 수정
+   ========================================= */
+// 왼쪽: 리스크 컨테이너
+.riskContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 부모(Grid Cell) 높이 100% 상속 */
+}
+
 .riskGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
+  /* 🟢 [수정] grid-template-rows를 auto가 아니라 1fr로 설정하여 균등 분할 & 꽉 채움 */
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  flex: 1; /* 남은 공간 모두 차지 */
+  height: 100%; /* 높이 100% 보장 */
 }
 
 .riskCard {
@@ -197,10 +210,14 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1.2rem;
-  min-height: 160px;
+
+  /* 🟢 고정 높이 대신, 그리드 셀을 꽉 채우도록 설정 */
+  height: 100%;
+  min-height: 160px; /* 최소 높이 보장 */
+
   display: flex;
   flex-direction: column;
-  justify-content: space-between; // 내용 없어도 높이 유지
+  justify-content: space-between;
   overflow: hidden;
 
   &__header {
@@ -218,7 +235,6 @@
     }
   }
 
-  // 데이터 없을 때 메시지 스타일
   &__empty {
     flex-grow: 1;
     display: flex;
@@ -230,21 +246,33 @@
   }
 }
 
-// 우측 매트릭스
+/* =========================================
+   🟢 [오른쪽] 매트릭스 컨테이너 & 카드 수정
+   ========================================= */
+.matrixContainer {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%; /* 🟢 부모 그리드 높이를 100% 상속받음 (가장 중요) */
+}
+
 .matrixCard {
   background-color: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1rem;
-  // height: 340px;  <-- 🔴 삭제 (고정 높이 제거)
-  flex-grow: 1; // 🟢 추가 (남은 공간 꽉 채우기)
 
-  // 기존 중앙 정렬 속성 유지
+  /* 🟢 flex: 1을 주어 컨테이너의 남은 높이를 100% 채움 */
+  flex: 1;
+  /* 🟢 min-height는 컨텐츠 보호용으로만 두고, 실제 높이는 왼쪽을 따라감 */
+  min-height: 340px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
 
   h3 {
     margin-bottom: 1rem;
@@ -252,7 +280,6 @@
     color: #ddd;
   }
 
-  // 빈 상태 스타일 (기존 유지)
   &__empty {
     height: 100%;
     display: flex;
@@ -268,7 +295,6 @@
     }
   }
 }
-
 // 유틸리티
 .buttonRail {
   display: flex;
@@ -319,9 +345,40 @@
   min-height: 100px;
 }
 
-.riskContainer,
-.matrixContainer {
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.sectionDesc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+}
+
+.matrixCard {
+  // ... 기존 스타일
   display: flex;
   flex-direction: column;
-  height: 100%;
+  position: relative; // excludedList 위치 잡기 위해
+}
+
+.excludedList {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.excludedBadge {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #ff6b6b; // 붉은 계열로 경고 느낌
 }
