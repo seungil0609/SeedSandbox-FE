@@ -112,14 +112,14 @@ function TransactionCreateModal({ onClose }: ModalProps) {
       </header>
 
       <form onSubmit={handleSubmit} className={style.columnWrapper}>
-        <label className={style.label}>티커나 이름을 입력하세요</label>
+        <label className={style.label}>티커 혹은 이름을 입력하세요.</label>
         <div className={style.autocomplete}>
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchQuery.trim() && setDropdownOpen(true)}
             onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
-            placeholder={assetTicker || "예: AAPL, 삼성전자"}
+            placeholder={assetTicker || "Samsung, AAPL"}
           />
           {dropdownOpen && results && results.length > 0 && (
             <div className={style.dropdown}>
@@ -143,17 +143,8 @@ function TransactionCreateModal({ onClose }: ModalProps) {
             </div>
           )}
         </div>
-        <label className={style.label}>거래 종류를 선택하세요</label>
+        <label className={style.label}>거래 종류를 선택하세요.</label>
         <div className={style.rowWrapper__type}>
-          <button
-            type="button"
-            className={`${style.button__sell} ${
-              transactionType === "SELL" ? style.button__sell__active : ""
-            }`}
-            onClick={() => setTransactionType("SELL")}
-          >
-            매도
-          </button>
           <button
             type="button"
             className={`${style.button__buy} ${
@@ -162,6 +153,15 @@ function TransactionCreateModal({ onClose }: ModalProps) {
             onClick={() => setTransactionType("BUY")}
           >
             매수
+          </button>
+          <button
+            type="button"
+            className={`${style.button__sell} ${
+              transactionType === "SELL" ? style.button__sell__active : ""
+            }`}
+            onClick={() => setTransactionType("SELL")}
+          >
+            매도
           </button>
         </div>
         <div className={style.rowWrapper__number}>
@@ -182,7 +182,7 @@ function TransactionCreateModal({ onClose }: ModalProps) {
           </div>
           {/* 🟢 [수정] 통화 선택 드롭다운 -> 읽기 전용 텍스트로 변경 */}
           <div className={style.columnWrapper}>
-            <label className={style.label}>통화 (자동)</label>
+            <label className={style.label}>통화</label>
             <input
               className={style.readOnlyInput}
               value={currency}
@@ -191,9 +191,7 @@ function TransactionCreateModal({ onClose }: ModalProps) {
             />
           </div>
         </div>
-        <label className={style.label}>
-          거래시간 (예: 2025년 11월 29일 오후 11시 33분)
-        </label>
+        <label className={style.label}>거래 일자</label>
         <input
           type="datetime-local"
           value={transactionDate}

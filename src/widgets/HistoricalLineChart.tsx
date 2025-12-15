@@ -1,121 +1,208 @@
-import { useAtom } from "jotai";
 import { ResponsiveLine } from "@nivo/line";
+import { useAtom } from "jotai";
 import {
   portfolioChartData,
   portfolioChartIndexData,
+  PortfolioDashboardAtom, // 🟢 [추가] 포트폴리오 이름 가져오기 위함
 } from "../store/dashboard/atoms";
 
 interface Props {
-  range: string; // 부모로부터 현재 선택된 기간을 받음 (예: "3mo", "max")
+  range: string;
 }
 
-function HistoricalLineChart({ range }: Props) {
+const HistoricalLineChart = ({ range }: Props) => {
   const [chartData] = useAtom(portfolioChartData);
   const [indexData] = useAtom(portfolioChartIndexData);
+  const [dashboardData] = useAtom(PortfolioDashboardAtom); // 🟢 [추가]
 
-  if (!chartData) return null;
+  // 🟢 [설정] 포트폴리오 이름 가져오기 (없으면 기본값)
+  const portfolioName = dashboardData?.name || "내 포트폴리오";
 
-  // 데이터 전처리 (Nivo Time Scale은 Date 객체를 선호함)
-  const cleaned = chartData.historicalChartData
-    .filter((p) => p && p.date && p.value !== null)
-    .map((p) => ({ x: new Date(p.date), y: Number(p.value) }))
-    .sort((a, b) => a.x.getTime() - b.x.getTime());
+  // 데이터가 없을 때 처리
+  if (
+    !chartData?.historicalChartData ||
+    chartData.historicalChartData.length === 0
+  ) {
+    return (
+      <div
+        style={{
+          height: "300px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#666",
+          background: "rgba(255,255,255,0.03)",
+          borderRadius: "12px",
+        }}
+      >
+        데이터가 없습니다.
+      </div>
+    );
+  }
 
-  const cleanedIndex = indexData?.data
-    ? indexData.data
-        .filter((p) => p && p.date && p.value !== null)
-        .map((p) => ({ x: new Date(p.date), y: Number(p.value) }))
-        .sort((a, b) => a.x.getTime() - b.x.getTime())
-    : [];
-
-  const series = [
+  // Nivo Line 차트용 데이터 포맷팅
+  const data = [
     {
-      id: "내 포트폴리오",
-      data: cleaned,
+      id: portfolioName, // 🟢 [수정] 동적 이름 적용 (예: 'test')
+      data: chartData.historicalChartData.map((d) => ({
+        x: d.date,
+        y: d.value,
+      })),
     },
-    ...(cleanedIndex.length
-      ? [
-          {
-            id: indexData?.index || "시장 지수",
-            data: cleanedIndex,
-          },
-        ]
-      : []),
   ];
 
-  // 🟢 기간(Range)에 따른 X축 라벨 포맷 및 간격 설정
-  const getAxisBottomSettings = () => {
-    switch (range) {
+  // 벤치마크 데이터가 있으면 추가
+  if (indexData && indexData.data && indexData.data.length > 0) {
+    data.push({
+      id: indexData.symbol || "Market",
+      data: indexData.data.map((d) => ({
+        x: d.date,
+        y: d.value,
+      })),
+    });
+  }
+
+  // 기간별 X축 눈금(Tick) 설정 함수
+  const getAxisSettings = (currentRange: string) => {
+    const format = "%Y.%m.%d";
+    let tickValues = "every 1 month";
+
+    switch (currentRange) {
       case "7d":
+        tickValues = "every 1 day";
+        break;
       case "1mo":
-        return { format: "%m/%d", tickValues: "every 2 days" }; // 12/12
+        tickValues = "every 1 week";
+        break;
       case "3mo":
+        tickValues = "every 1 month";
+        break;
       case "6mo":
-        return { format: "%m월", tickValues: "every 1 month" }; // 12월
+        tickValues = "every 1 month";
+        break;
       case "1y":
-        return { format: "%Y.%m", tickValues: "every 2 months" }; // 24.12
+        tickValues = "every 3 months";
+        break;
       case "3y":
+        tickValues = "every 1 year";
+        break;
       case "max":
-        return { format: "%Y년", tickValues: "every 1 year" }; // 2024년
+        tickValues = "every 1 year";
+        break;
       default:
-        return { format: "%Y-%m-%d", tickValues: 5 };
+        tickValues = "every 1 month";
     }
+    return { format, tickValues };
   };
 
-  const axisSettings = getAxisBottomSettings();
+  const axisSettings = getAxisSettings(range);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ height: "300px", width: "100%" }}>
       <ResponsiveLine
-        data={series}
-        margin={{ top: 20, right: 30, bottom: 50, left: 50 }}
-        // 🟢 중요: 포인트 방식이 아니라 시간(Time) 방식으로 변경
+        data={data}
+        margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
         xScale={{
           type: "time",
-          format: "native", // 입력 데이터가 Date 객체임
+          format: "%Y-%m-%d",
           precision: "day",
         }}
-        yScale={{ type: "linear", min: "auto", max: "auto", stacked: false }}
-        curve="monotoneX"
+        xFormat="time:%Y.%m.%d"
+        yScale={{
+          type: "linear",
+          min: "auto",
+          max: "auto",
+          stacked: false,
+          reverse: false,
+        }}
         axisTop={null}
         axisRight={null}
         axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
+          format: axisSettings.format,
+          tickValues: axisSettings.tickValues,
+          tickSize: 0,
+          tickPadding: 12,
           tickRotation: 0,
-          format: axisSettings.format, // 동적 포맷 (%Y년 등)
-          tickValues: axisSettings.tickValues, // 동적 간격 (every 1 month 등)
         }}
         axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
+          tickSize: 0,
+          tickPadding: 12,
           tickRotation: 0,
         }}
         colors={["#00bfff", "#ff7f50"]}
-        lineWidth={2}
-        pointSize={0} // 포인트 제거하여 선을 매끄럽게
-        useMesh={true}
+        lineWidth={3}
+        pointSize={0}
+        pointColor={{ theme: "background" }}
+        pointBorderWidth={2}
+        pointBorderColor={{ from: "serieColor" }}
         enableGridX={false}
         enableGridY={true}
+        gridYValues={5}
+        useMesh={true}
+        // 🟢 [수정] 툴팁 커스터마이징 (가로 정렬 & 동적 이름)
+        tooltip={({ point }) => (
+          <div
+            style={{
+              background: "rgba(30, 30, 30, 0.95)",
+              padding: "8px 12px",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderRadius: "6px",
+              color: "#fff",
+              fontSize: "12px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+              whiteSpace: "nowrap", // ⭐️ 핵심: 줄바꿈 방지
+            }}
+          >
+            <div
+              style={{ color: "#aaa", marginBottom: "4px", fontSize: "11px" }}
+            >
+              {point.data.xFormatted}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <div
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: point.seriesColor,
+                }}
+              />
+              {/* 동적 이름 표시 */}
+              <span style={{ fontWeight: 600 }}>{point.seriesId}:</span>
+              <span>{point.data.yFormatted}%</span>
+            </div>
+          </div>
+        )}
         theme={{
-          text: { fill: "#aaa", fontSize: 11 },
-          axis: { ticks: { text: { fill: "#888" } } },
-          grid: { line: { stroke: "#333", strokeDasharray: "4 4" } },
-          crosshair: { line: { stroke: "#fff", strokeWidth: 1 } },
+          text: {
+            fill: "#888",
+            fontSize: 11,
+          },
+          grid: {
+            line: {
+              stroke: "#333",
+              strokeWidth: 1,
+              strokeDasharray: "4 4",
+            },
+          },
+          crosshair: {
+            line: {
+              stroke: "#fff",
+              strokeWidth: 1,
+              strokeOpacity: 0.5,
+            },
+          },
           tooltip: {
             container: {
               background: "#222",
               color: "#fff",
               fontSize: "12px",
-              border: "1px solid #444",
             },
           },
         }}
-        // 툴팁 날짜 포맷도 보기 좋게
-        xFormat="time:%Y-%m-%d"
       />
     </div>
   );
-}
+};
 
 export default HistoricalLineChart;

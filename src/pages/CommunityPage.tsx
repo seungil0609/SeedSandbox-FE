@@ -21,15 +21,7 @@ const formatDate = (dateString: string) => {
   return `${year}.${month}.${day}`;
 };
 
-const BOARD_TYPES = [
-  "전체보기",
-  "자유",
-  "질문",
-  "정보",
-  "수익률 자랑",
-  "종목 토론",
-  "공지",
-];
+const BOARD_TYPES = ["전체보기", "공지", "질문", "자유", "정보"];
 
 function CommunityPage() {
   const getPostDataById = useSetAtom(getPostDataByIdAtom);

@@ -9,7 +9,6 @@ interface Props {
 }
 
 // (참고) 현재 로직에서는 사용되지 않지만, 나중에 카드로 보여주고 싶을 때를 대비해 남겨둘 수 있습니다.
-// 사용하지 않는다면 지우셔도 됩니다.
 const AssetSummaryCard = ({
   header,
   print,
@@ -40,27 +39,23 @@ function AssetDetailModal({ onClose }: Props) {
 
   const assetCurrency = meta?.currency?.toUpperCase() || "USD";
 
-  // 🟢 [헬퍼] 유효한 숫자인지 확인하는 함수
+  // 유효한 숫자인지 확인하는 함수
   const isValid = (num: any) => typeof num === "number" && !isNaN(num);
 
-  // 🟢 [수정] formatCurrency 함수 업데이트
-  // 숫자가 너무 길면 '조', '억' 등으로 축약하여 표시 (notation: "compact")
+  // formatCurrency 함수 업데이트
   const formatCurrency = (value: number | undefined, digits = 0) => {
     if (!isValid(value)) return "-";
-
-    // 숫자가 0이면 그냥 0 리턴
     if (value === 0) return `${assetCurrency} 0`;
 
     return `${assetCurrency} ${new Intl.NumberFormat("ko-KR", {
       maximumFractionDigits: digits,
-      notation: "compact", // 👈 이 옵션이 핵심입니다 (자동 축약)
+      notation: "compact",
       compactDisplay: "short",
     }).format(value!)}`;
   };
 
   const assetType = meta?.assetType || "EQUITY";
 
-  // 🟢 [수정 1] 중복 선언 제거 (listItems 로직 하나만 남김)
   let listItems: { label: string; value: string }[] = [];
 
   if (f) {
@@ -74,9 +69,8 @@ function AssetDetailModal({ onClose }: Props) {
     ];
 
     if (assetType === "EQUITY") {
-      // 주식(EQUITY)일 경우: 재무 지표 + 밸류에이션 + 공통 항목
       listItems = [
-        // 1. 핵심 재무 정보 (요청하신 부분)
+        // 1. 핵심 재무 정보
         { label: "시가총액", value: formatCurrency(f.marketCap) },
         { label: "매출", value: formatCurrency(f.totalRevenue) },
         { label: "현금", value: formatCurrency(f.totalCash) },
@@ -99,7 +93,7 @@ function AssetDetailModal({ onClose }: Props) {
             : "-",
         },
 
-        // 3. 배당 및 목표가 (요청하신 부분)
+        // 3. 배당 및 목표가
         {
           label: "배당수익률",
           value: isValid(f.dividendYield)
@@ -119,7 +113,7 @@ function AssetDetailModal({ onClose }: Props) {
             ? f.recommendationKey.replace(/_/g, " ").toUpperCase()
             : "-",
         },
-        ...commonItems, // 52주 최고/최저, 거래량
+        ...commonItems,
       ];
     } else {
       listItems = [
@@ -179,8 +173,6 @@ function AssetDetailModal({ onClose }: Props) {
         </div>
 
         <div className={style.content}>
-          {/* 🟢 [수정 2] cards 렌더링 부분 삭제하고 listItems만 렌더링 */}
-
           <div className={style.details}>
             {listItems.map((item) => (
               <div key={item.label} className={style.details__item}>
@@ -219,36 +211,56 @@ function AssetDetailModal({ onClose }: Props) {
                   useMesh={true}
                   enableArea={true}
                   areaOpacity={0.1}
-                  theme={{
-                    text: { fill: "#888", fontSize: 11 },
-                    grid: { line: { stroke: "#333", strokeDasharray: "4 4" } },
-                    tooltip: {
-                      container: {
-                        background: "rgba(20,20,20,0.95)",
-                        color: "#fff",
-                        borderRadius: 8,
-                        border: "1px solid #444",
-                        fontSize: "12px",
-                      },
-                    },
-                    axis: { ticks: { text: { fill: "#666" } } },
-                  }}
+                  // 🟢 [수정] 툴팁 스타일 커스터마이징 (검은 배경, 가로 정렬)
                   tooltip={({ point }) => (
-                    <div style={{ padding: "8px 12px" }}>
-                      <div style={{ color: "#aaa", marginBottom: 4 }}>
+                    <div
+                      style={{
+                        background: "rgba(30, 30, 30, 0.95)",
+                        padding: "8px 12px",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "12px",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+                        whiteSpace: "nowrap", // 줄바꿈 방지
+                      }}
+                    >
+                      <div
+                        style={{
+                          color: "#aaa",
+                          marginBottom: "4px",
+                          fontSize: "11px",
+                        }}
+                      >
                         {point.data.xFormatted}
                       </div>
                       <div
                         style={{
                           fontWeight: 700,
                           color: "#00bfff",
-                          fontSize: 14,
+                          fontSize: "14px",
                         }}
                       >
                         {assetCurrency} {point.data.yFormatted}
                       </div>
                     </div>
                   )}
+                  // 🟢 [수정] 테마 설정 (기본 스타일 덮어쓰기)
+                  theme={{
+                    text: { fill: "#888", fontSize: 11 },
+                    grid: {
+                      line: { stroke: "#333", strokeDasharray: "4 4" },
+                    },
+                    tooltip: {
+                      container: {
+                        background: "#222",
+                        color: "#fff",
+                        fontSize: "12px",
+                        border: "1px solid #444",
+                      },
+                    },
+                    axis: { ticks: { text: { fill: "#666" } } },
+                  }}
                 />
               </div>
             </section>

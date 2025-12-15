@@ -60,7 +60,7 @@ function TransactionPage() {
   };
 
   const handleDeleteTransaction = async (transactionId: string) => {
-    if (window.confirm("이 거래 내역을 삭제하시겠습니까?")) {
+    if (window.confirm("이 거래내역을 삭제하시겠습니까?")) {
       await deleteTransactionById(transactionId);
     }
   };
@@ -241,7 +241,7 @@ function TransactionPage() {
                       color: "#666",
                     }}
                   >
-                    거래 내역이 없습니다.
+                    거래내역이 없습니다.
                   </td>
                 </tr>
               )}

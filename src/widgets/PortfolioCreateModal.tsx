@@ -31,7 +31,7 @@ function PortfolioCreateModal({ onClose }: ModalProps) {
       </header>
 
       <form onSubmit={handleSubmit} className={style.columnWrapper}>
-        <label className={style.label}>포트폴리오 이름을 입력하세요</label>
+        <label className={style.label}>포트폴리오 이름을 입력하세요.</label>
         <input value={name} onChange={(e) => setName(e.target.value)}></input>
 
         <div className={style.rowWrapper__number}>
