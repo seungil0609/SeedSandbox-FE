@@ -17,11 +17,10 @@ function SignInPage() {
   const navigate = useNavigate();
 
   const handleSignInError = (error: FirebaseError) => {
-    // 🟢 에러 메시지 개선
     switch (error.code) {
       case "auth/user-not-found":
       case "auth/wrong-password":
-      case "auth/invalid-credential": // 최신 파이어베이스 에러 코드 대응
+      case "auth/invalid-credential":
         setStatus("아이디 또는 비밀번호를 다시 확인해주세요.");
         break;
       case "auth/invalid-email":
@@ -58,9 +57,8 @@ function SignInPage() {
       <GuestHeader />
       <div className={style.pageWrapper}>
         <section className={style.signUpSection}>
-          {/* 🟢 문구 수정 */}
           <h1>다시 오셨군요!</h1>
-          <p>주식 투자의 첫 걸음, SeedSandbox</p>
+          <p>SeedSandbox | 투자의 시작, 가장 안전한 실험실</p>
 
           <form
             className={style.form}
@@ -69,25 +67,34 @@ function SignInPage() {
               handleLogin();
             }}
           >
-            <label>아이디</label>
-            <input
-              className={style.input}
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              placeholder="example@email.com"
-            />
-            <label>비밀번호</label>
-            <input
-              className={style.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호 입력"
-            />
+            {/* 🟢 [수정] inputGroup div로 감싸서 라벨과 인풋을 붙여줍니다 */}
+            <div className={style.inputGroup}>
+              <label>아이디</label>
+              <input
+                className={style.input}
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+                placeholder="example@email.com"
+              />
+            </div>
+
+            {/* 🟢 [수정] inputGroup div로 감싸기 */}
+            <div className={style.inputGroup}>
+              <label>비밀번호</label>
+              <input
+                className={style.input}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="비밀번호 입력"
+              />
+            </div>
 
             <div className={style.rowWrapper}>
-              {/* 에러 메시지 스타일을 위해 클래스 추가 권장 (예: style.errorStatus) */}
-              <label className={style.status} style={{ color: "#ff6b6b" }}>
+              <label
+                className={style.status}
+                style={{ color: "#ff6b6b", minHeight: "20px" }}
+              >
                 {status}
               </label>
             </div>
@@ -99,7 +106,7 @@ function SignInPage() {
         </section>
         <div className={style.rowWrapper}>
           <p>회원이 아니시라면?</p>
-          <Link to="/signUp" className={style.loginTextButton}>
+          <Link to="/signup" className={style.loginTextButton}>
             회원가입
           </Link>
         </div>

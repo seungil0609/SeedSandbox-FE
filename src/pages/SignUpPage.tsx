@@ -155,7 +155,7 @@ function SignUpPage() {
       <div className={style.pageWrapper}>
         <section className={style.signUpSection}>
           <h1>SeedSandbox과 함께해요!</h1>
-          <p>부담없이 모의로 주식 포트폴리오 관리를 시작해보세요.</p>
+          <p>부담없이 모의로 투자 포트폴리오 관리를 시작해보세요.</p>
 
           <form
             className={style.form}
