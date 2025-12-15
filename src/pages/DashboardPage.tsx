@@ -105,16 +105,20 @@ function DashboardPage() {
     getPortfolioAIReview();
   }, [selectedPortfolioId, marketIndex]);
 
+  // 🟢 [수정] 빈 화면 렌더링 부분
   if (!selectedPortfolioId) {
     return (
-      <div
-        className={style.pageWrapper}
-        style={{ justifyContent: "center", alignItems: "center" }}
-      >
-        <h2>포트폴리오를 선택해주세요.</h2>
-        <Link to="/portfolio" style={{ color: "#00bfff" }}>
-          포트폴리오 관리로 이동
-        </Link>
+      <div className={style.pageWrapper}>
+        <div className={style.header}>
+          <div className={style.title}>대시보드</div>
+        </div>
+
+        <div className={style.emptyState}>
+          {/* 4번째 사진 스타일 적용 */}
+          <h2 style={{ color: "rgba(255, 255, 255, 0.2)" }}>
+            포트폴리오를 생성해주세요.
+          </h2>
+        </div>
       </div>
     );
   }
@@ -122,14 +126,24 @@ function DashboardPage() {
   const kpiItems = totals
     ? [
         {
-          label: "총 자산 가치",
+          label: "자산가치",
           value: `${
             totals.baseCurrency
           } ${totals.totalPortfolioValue.toLocaleString()}`,
           status: "neutral",
         },
         {
-          label: "총 수익",
+          label: "수익률",
+          value: `${totals.totalPortfolioReturnPercentage.toFixed(2)}%`,
+          status:
+            totals.totalPortfolioReturnPercentage > 0
+              ? "positive"
+              : totals.totalPortfolioReturnPercentage < 0
+              ? "negative"
+              : "neutral",
+        },
+        {
+          label: "수익",
           value: `${
             totals.baseCurrency
           } ${totals.totalPortfolioProfitLoss.toLocaleString()}`,
@@ -147,22 +161,12 @@ function DashboardPage() {
           } ${totals.totalPortfolioCostBasis.toLocaleString()}`,
           status: "neutral",
         },
-        {
-          label: "수익률",
-          value: `${totals.totalPortfolioReturnPercentage.toFixed(2)}%`,
-          status:
-            totals.totalPortfolioReturnPercentage > 0
-              ? "positive"
-              : totals.totalPortfolioReturnPercentage < 0
-              ? "negative"
-              : "neutral",
-        },
       ]
     : [
-        { label: "총 자산 가치", value: "-", status: "neutral" },
-        { label: "총 수익", value: "-", status: "neutral" },
-        { label: "원금", value: "-", status: "neutral" },
+        { label: "자산가치", value: "-", status: "neutral" },
         { label: "수익률", value: "-", status: "neutral" },
+        { label: "수익", value: "-", status: "neutral" },
+        { label: "원금", value: "-", status: "neutral" },
       ];
 
   const hasRiskData = riskData && riskData.metrics && riskData.benchmark;
@@ -170,21 +174,21 @@ function DashboardPage() {
   const riskComparisonItems = [
     {
       key: "volatility",
-      label: "변동성 (Volatility)",
+      label: "변동성",
       desc: "낮을수록 안정적",
       portfolioValue: hasRiskData ? riskData.metrics.volatility : 0,
       benchmarkValue: hasRiskData ? riskData.benchmark.volatility : 0,
     },
     {
       key: "beta",
-      label: "베타 (Beta)",
+      label: "베타",
       desc: "시장 민감도 (기준 1.0)",
       portfolioValue: hasRiskData ? riskData.metrics.beta : 0,
       benchmarkValue: 1.0,
     },
     {
       key: "maxDrawdown",
-      label: "최대 낙폭 (MDD)",
+      label: "최대 낙폭",
       desc: "0에 가까울수록 좋음",
       portfolioValue: hasRiskData ? riskData.metrics.maxDrawdown : 0,
       benchmarkValue: hasRiskData ? riskData.benchmark.maxDrawdown : 0,
@@ -192,8 +196,8 @@ function DashboardPage() {
     },
     {
       key: "sharpeRatio",
-      label: "샤프 지수 (Sharpe)",
-      desc: "클수록 좋음",
+      label: "샤프 지수",
+      desc: "높을수록 좋음",
       portfolioValue: hasRiskData ? riskData.metrics.sharpeRatio : 0,
       benchmarkValue: hasRiskData ? riskData.benchmark.sharpeRatio : 0,
     },
@@ -259,9 +263,9 @@ function DashboardPage() {
                 }}
               />
             ) : hasTransactions ? (
-              "데이터를 분석 중입니다..."
+              "분석 중입니다..."
             ) : (
-              "거래 내역이 부족하여 분석할 수 없습니다."
+              "거래내역이 부족하여 분석할 수 없습니다."
             )}
           </span>
         </div>
@@ -298,7 +302,7 @@ function DashboardPage() {
         {/* 상관관계 매트릭스 */}
         <div className={style.matrixContainer}>
           <div className={style.sectionHeader}>
-            <h3 className={style.sectionTitle}>자산 상관관계</h3>
+            <h3 className={style.sectionTitle}>자산 상관관계 분석</h3>
           </div>
 
           <div className={style.matrixCard}>
@@ -314,7 +318,7 @@ function DashboardPage() {
                   }}
                 >
                   1.0에 가까울수록 함께 움직이고, -1.0에 가까울수록 반대로
-                  움직입니다. (0은 관계없음)
+                  움직임
                 </div>
 
                 {/* 🟢 [수정] 차트 컨테이너에 명시적인 높이 부여 (중요!) */}
@@ -332,7 +336,7 @@ function DashboardPage() {
                 {excludedAssets.length > 0 && (
                   <div className={style.excludedList}>
                     <span className={style.excludedLabel}>
-                      ⚠️ 분석 제외 (데이터 부족 또는 섹터 미정):
+                      ⚠️ 분석 제외 (섹터 미정 또는 데이터 부족):
                     </span>
                     {excludedAssets.map((ticker) => (
                       <span key={ticker} className={style.excludedBadge}>
@@ -344,8 +348,7 @@ function DashboardPage() {
               </>
             ) : (
               <div className={style.matrixCard__empty}>
-                <p>거래 내역을 추가하면</p>
-                <p>자산 간 상관관계를 분석해드립니다.</p>
+                <p>보유 중인 자산이 없습니다.</p>
               </div>
             )}
           </div>

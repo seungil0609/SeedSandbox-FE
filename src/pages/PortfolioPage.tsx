@@ -161,7 +161,7 @@ function PortfolioPage() {
             <div className={style.emptySidebar}>
               포트폴리오를
               <br />
-              생성해주세요
+              생성해주세요.
             </div>
           )}
         </aside>

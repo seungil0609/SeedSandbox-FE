@@ -119,24 +119,34 @@
 }
 
 // 🟢 [신규] 사이드바 내 삭제 버튼
-.sidebarDeleteBtn {
+.sidebarIconBtn {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 28px; // 정사각형 크기 고정
+  height: 28px;
+  flex-shrink: 0; // 찌그러짐 방지
+
   background: transparent;
   border: none;
-  color: inherit; // 부모 색상 따름 (호버시 파랑, 기본 회색)
-  opacity: 0.5;
-  padding: 4px;
-  border-radius: 4px;
+  border-radius: 6px;
+
+  color: inherit; // 부모 텍스트 색상 상속 (회색 -> 호버시 흰색 -> 활성시 파랑)
+  opacity: 0.5; // 평소엔 흐리게
   cursor: pointer;
   transition: all 0.2s;
-  margin-left: 8px;
 
+  // 아이콘 버튼 자체 호버 효과
   &:hover {
-    background: rgba(192, 37, 37, 0.15); // 은은한 붉은 배경
-    color: #ff6666 !important; // 붉은색 강제 적용
+    background-color: rgba(255, 255, 255, 0.1); // 은은한 배경
     opacity: 1;
+    transform: scale(1.1); // 살짝 커짐
+  }
+
+  // 클릭 효과
+  &:active {
+    transform: scale(0.95);
   }
 }
 

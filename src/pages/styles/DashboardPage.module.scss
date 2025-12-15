@@ -382,3 +382,33 @@
   border-radius: 4px;
   color: #ff6b6b; // 붉은 계열로 경고 느낌
 }
+
+// 🟢 [신규] 대시보드 빈 화면 스타일 (4번째 사진 스타일 적용)
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60vh; // 화면 중앙에 오도록 높이 확보
+  gap: 1.5rem;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #3a4a5e; // 4번째 사진과 유사한 짙은 회색/남색 톤
+    // 또는 배경이 어둡다면: color: rgba(255, 255, 255, 0.2);
+    margin: 0;
+    text-align: center;
+  }
+
+  a {
+    color: #00bfff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
