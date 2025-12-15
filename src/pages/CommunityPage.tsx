@@ -55,7 +55,7 @@ function CommunityPage() {
   // 🟢 게시글 삭제 핸들러
   const handleDeletePost = async (e: React.MouseEvent, postId: string) => {
     e.stopPropagation(); // 부모(상세보기) 클릭 이벤트 전파 중단
-    if (window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
+    if (window.confirm("이 게시글을 삭제 하시겠습니까?")) {
       await deletePostById(postId);
       // 삭제 후 목록 갱신은 atom 내부 로직에 따름 (보통 자동 갱신됨)
     }

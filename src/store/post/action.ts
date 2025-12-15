@@ -111,8 +111,6 @@ export const deletePostByIdAtom = atom(
           currentPosts.filter((post) => post._id !== postId)
         );
       }
-
-      alert("게시글이 삭제되었습니다.");
     } catch (error) {
       console.error("게시글 삭제 실패:", error);
       alert("게시글 삭제에 실패했습니다.");

@@ -80,7 +80,7 @@ function PortfolioPage() {
     portfolioId: string
   ) => {
     e.stopPropagation();
-    if (window.confirm("정말 이 포트폴리오를 삭제하시겠습니까?")) {
+    if (window.confirm("이 포트폴리오를 삭제 하시겠습니까?")) {
       if (selectedPortfolioId !== portfolioId) setCurrentPortfolio(portfolioId);
       await deleteCurrentPortfolio();
     }

@@ -198,11 +198,13 @@
 .riskGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  /* 🟢 [수정] grid-template-rows를 auto가 아니라 1fr로 설정하여 균등 분할 & 꽉 채움 */
+
+  // ⭐️ 핵심: 2개의 행이 남은 높이를 정확히 절반씩 나눠 가짐
   grid-template-rows: 1fr 1fr;
-  gap: 12px;
-  flex: 1; /* 남은 공간 모두 차지 */
-  height: 100%; /* 높이 100% 보장 */
+
+  gap: 1rem;
+  flex: 1; // 부모의 남은 공간 채우기
+  min-height: 0; // flex item 내부 스크롤 이슈 방지
 }
 
 .riskCard {
@@ -252,7 +254,6 @@
 .matrixContainer {
   display: flex;
   flex-direction: column;
-  min-width: 0;
   height: 100%; /* 🟢 부모 그리드 높이를 100% 상속받음 (가장 중요) */
 }
 

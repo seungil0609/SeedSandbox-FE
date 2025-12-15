@@ -40,7 +40,7 @@ function MyPage() {
   };
 
   const handleDeleteAccount = async () => {
-    if (window.confirm("정말로 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.")) {
+    if (window.confirm("정말로 탈퇴 하시겠습니까? 모든 데이터가 삭제됩니다.")) {
       await setDeleteAccount();
       navigate("/signin");
     }

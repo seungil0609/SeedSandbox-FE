@@ -60,7 +60,7 @@ function TransactionPage() {
   };
 
   const handleDeleteTransaction = async (transactionId: string) => {
-    if (window.confirm("이 거래내역을 삭제하시겠습니까?")) {
+    if (window.confirm("이 거래내역을 삭제 하시겠습니까?")) {
       await deleteTransactionById(transactionId);
     }
   };
