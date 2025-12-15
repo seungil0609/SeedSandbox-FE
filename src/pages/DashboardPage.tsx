@@ -302,7 +302,7 @@ function DashboardPage() {
         {/* 상관관계 매트릭스 */}
         <div className={style.matrixContainer}>
           <div className={style.sectionHeader}>
-            <h3 className={style.sectionTitle}>자산 상관관계 분석</h3>
+            <h3 className={style.sectionTitle}>상관관계 분석</h3>
           </div>
 
           <div className={style.matrixCard}>
@@ -313,7 +313,6 @@ function DashboardPage() {
                     padding: "0 0 10px 0",
                     fontSize: "0.85rem",
                     color: "rgba(255,255,255,0.5)",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
                     marginBottom: "10px",
                   }}
                 >

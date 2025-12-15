@@ -165,7 +165,7 @@ function SignUpPage() {
             }}
           >
             <div className={style.inputGroup}>
-              <label>아이디(이메일)</label>
+              <label>아이디</label>
               <input
                 className={style.input}
                 value={id}
