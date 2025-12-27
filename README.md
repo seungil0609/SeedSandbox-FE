@@ -2,7 +2,10 @@
 
 "The Safest Laboratory to Start Investing" — Risk Analysis & Mock Trading Platform for Beginners
 
-![Build](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Vite](https://img.shields.io/badge/bundler-vite-ff69b4) ![TypeScript](https://img.shields.io/badge/lang-TypeScript-3178C6)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 
 ---
 
@@ -14,120 +17,236 @@ The interface emphasizes clarity for financial data (returns, volatility, correl
 
 ---
 
-## Key Features ✅
+## Key Features
 
-- **Dashboard** — Interactive time-series chart comparing portfolio & asset returns vs a Benchmark (S&P 500)  
-  [Insert Screenshot Here]
-- **AI Portfolio Diagnosis** — Natural language reports analyzing investment style, concentration risk, and tail exposures using Google Gemini API  
-  [Insert Screenshot Here]
-- **Risk Analytics** — Visualizations for essential quantitative metrics (Volatility, Beta, Sharpe Ratio, Maximum Drawdown) to help users interpret risk-adjusted performance  
-  [Insert Screenshot Here]
-- **Asset Correlation Map** — Correlation heatmap to reveal concentration and diversification insights among held assets  
-  [Insert Screenshot Here]
+### 1. Smart Dashboard & AI Diagnosis
+
+**Gain objective insights by comparing your performance against the market benchmark.**
+
+- **Interactive Time-Series Chart:** Visualizes portfolio returns vs. S&P 500 with dynamic time-frame filtering (1W to 3Y) and re-basing logic.
+- **Global Market Overview:** Tracks key indices including **Dow, Nasdaq, KOSPI, and KOSDAQ** alongside your total asset summary.
+- **AI-Powered Diagnosis:** Leverages **Gemini 2.5 Flash** to generate natural language reports analyzing your investment style, sector concentration, and potential risks.
+
+![Dashboard Overview](./assets/dashboard_1.png)
+
+<br/>
+
+### 2. Advanced Risk Analytics
+
+**Go beyond simple returns with professional quantitative metrics.**
+
+- **Comparative Risk Metrics:** Visualizes **Volatility, Beta, Sharpe Ratio, and MDD**, directly comparing your portfolio against the S&P 500 benchmark.
+- **Correlation Heatmap:** A color-coded matrix (-1 to 1) to analyze price correlation between assets, helping users optimize diversification strategies.
+
+![Risk Analytics](./assets/dashboard_2.png)
+
+<br/>
+
+### 3. Portfolio Management
+
+**Track your asset status with real-time data precision.**
+
+- **Performance Tracking:** detailed breakdown of **Average Price vs. Current Price** to calculate exact Profit/Loss (PnL) percentages.
+- **Dynamic Currency Conversion:** Supports real-time toggling between **USD and KRW**, automatically handling exchange rates for total valuation.
+- **Holdings Management:** Intuitive interface to view, add, or remove assets with instantaneous valuation updates.
+
+![Portfolio](./assets/portfolio.png)
+
+<br/>
+
+### 4. Stock Search & Deep Analysis
+
+**Access comprehensive financial data before making decisions.**
+
+- **Key Financial Indicators:** Provides essential fundamental data including **Market Cap, PER, EPS, and Revenue** sourced via Yahoo Finance API.
+- **Interactive Price Chart:** Visualizes historical price trends with a scrubbing interface for detailed price checks.
+- **News Integration:** Aggregates relevant news articles to help users stay informed about market sentiment.
+
+![Search](./assets/search.png)
+
+<br/>
+
+### 5. Transaction History
+
+**Maintain a transparent record of all trading activities.**
+
+- **Audit Log:** Chronologically records all Buy/Sell execution details (Date, Price, Quantity).
+- **Data Integrity:** Allows users to delete erroneous records, automatically triggering a recalculation of the entire portfolio's metrics.
+
+![Transactions](./assets/transactions.png)
+
+<br/>
+
+### 6. Community & Insights
+
+**Share ideas and grow with other investors.**
+
+- **Categorized Discussion Board:** Features a robust bulletin board with category filtering (Notice, Free, Q&A).
+- **Collective Intelligence:** Engage with the community through posts and comments to refine investment ideas.
+
+## ![Community](./assets/community.png)
 
 ---
 
-## Tech Stack 🔧
+## Tech Stack
 
-- Frontend: **React** ⚛️, **TypeScript** 🟦, **Vite** ⚡, **SCSS** 🎨
-- State Management: **Jotai** 🧠
-- Visualization: **Nivo Chart** 📊
-- Data & APIs: **yahoo-finance2** 💹, **Google Gemini API** 🤖
-- Tooling: ESLint, Prettier, Vite dev server
+### Frontend & Core
+
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![SCSS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)
+
+### State Management & Visualization
+
+![Jotai](https://img.shields.io/badge/Jotai-black?style=for-the-badge&logo=ghost&logoColor=white) ![Nivo](https://img.shields.io/badge/Nivo-red?style=for-the-badge&logo=nivo&logoColor=white)
+
+### Data & AI
+
+![Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white) ![Yahoo](https://img.shields.io/badge/Yahoo%20Finance-6001D2?style=for-the-badge&logo=yahoo&logoColor=white)
+
+### Infrastructure & Auth
+
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black) ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
+
+### Tooling
+
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)
+
+<br/>
+
+**Details:**
+
+- **Frontend:** `React`, `TypeScript`, `Vite`, `SCSS`
+- **State Management:** `Jotai`
+- **Visualization:** `Nivo`
+- **Data & AI:** `yahoo-finance2`, `Gemini-2.5-Flash`
+- **Authentication:** `Firebase Auth`
+- **Deployment:** `Vercel`
 
 ---
 
-## Problem Solving — Technical Challenges & Solutions 🧩
+## Problem Solving — Technical Challenges & Solutions
 
-SeedSandbox required robust data ingestion and validation to keep visualizations reliable and the AI diagnosis meaningful. Below are two concrete problems and the production fixes implemented during development.
+Ensuring the reliability of financial data was critical for SeedSandbox. Below are key engineering challenges faced during development and the solutions implemented to resolve them.
 
-### 1) Optimizing Data Collection Strategy (Fetch API → Library)
+### 1) Architecture Improvement: Data Ingestion Strategy
 
-**Problem:**  
-Originally we used raw `fetch` calls against the Yahoo Finance endpoints. Responses came back fragmented (separate arrays for timestamps and quote values), which forced custom parsing layers that were hard to reason about and brittle to future shape changes.
+**Problem:**
+Initially, raw REST API calls were used to fetch market data. However, the raw response structure was **fragmented** (timestamps and price values were separated into different arrays), requiring complex, brittle parsing logic that was prone to errors when API versions changed.
 
-**Solution:**  
-Migrated to the `yahoo-finance2` library. The library returns well-structured, typed arrays of historical bars and quote objects (e.g., `{ date, open, high, low, close, volume }`) and utility helpers that reduce boilerplate.
+**Solution:**
+Refactored the data layer by integrating the **`yahoo-finance2`** library. This library provides strictly typed interfaces and pre-validated data structures, eliminating the need for manual array mapping.
 
 **Result:**
 
-- Reduced data-processing logic by **over 50%**, simplifying both server and client ingestion code.
-- Increased maintainability and readability of time-series pipelines.
-- Example:
+- **Code Reduction:** Reduced data processing boilerplate code by **over 50%**.
+- **Maintainability:** Improved type safety with TypeScript, making the codebase more resilient to upstream API changes.
 
 ```ts
+// Before: Manual parsing (Complex & Error-prone)
+// After: Structured & Typed response using library
 import yahooFinance from "yahoo-finance2";
 
 const series = await yahooFinance.historical("AAPL", {
-  period1: "2020-01-01",
-  period2: "2025-01-01",
+  period1: "2024-01-01",
+  period2: "2024-12-31",
 });
 // series => [{ date: Date, open: number, close: number, high: number, low: number, volume: number }, ...]
 ```
 
 ---
 
-### 2) Ensuring Financial Data Integrity (Preprocessing)
+### 2) Stability: Defensive Data Preprocessing
 
-**Problem:**  
-Invalid symbols or empty values returned from third-party data caused server errors and broken chart renders on the client.
+**Problem:**
+Inconsistent data from external APIs (e.g., missing fields, null values, or delisted symbols) caused runtime errors during chart rendering, leading to a poor user experience (White Screen of Death).
 
-**Solution:**  
-Implemented robust preprocessing and validation layers prior to storage or rendering. This includes strict filters to exclude invalid entries, normalization of missing fields, and defensive checks before plotting.
+**Solution:**
+Implemented a **Defensive Programming** layer using strict preprocessing filters before passing data to the UI. This ensures that only complete and valid datasets reach the visualization components.
 
-**Implementation example:**
+**Implementation Logic:**
+
+1. **Validation:** Filter out assets with missing `symbol` or `price` data.
+2. **Sanitization:** Convert `null`/`undefined` values to safe defaults (e.g., `0` or `N/A`).
 
 ```ts
-const cleaned = rawAssets
-  .filter((item) => item && item.symbol) // ensure symbol exists
+// Example: Defensive filtering logic
+const cleanedAssets = rawAssets
+  .filter((item) => item?.symbol && item?.prices?.length > 0) // Strict filtering
   .map((item) => ({
-    symbol: item.symbol,
-    prices: (item.prices || []).filter(Boolean), // remove empty entries
+    ...item,
+    prices: item.prices.filter((p) => p.date && p.close !== null), // Data integrity check
   }));
 ```
 
 **Result:**
 
-- Prevented invalid data from being injected into UI components.
-- Significantly improved chart stability and correctness of displayed asset statuses.
-
-> Tip: Track counts of filtered/invalid symbols in analytics to surface upstream data issues to the team early.
+- Zero Crashes: Prevented UI breakdowns caused by malformed data.
+- Reliability: Significantly improved the stability of the Dashboard and Risk Analysis charts.
 
 ---
 
-## Getting Started — Development Setup 🚀
+## Getting Started
+
+Follow these steps to set up the project locally.
 
 ### Prerequisites
 
-- Node.js >= 16 LTS
-- npm or yarn
+Make sure you have the following installed on your machine:
 
-### Install
+- **Node.js** >= 18.0.0
+- **npm** or **yarn**
+
+### Installation
 
 ```bash
-git clone https://github.com/your-org/SeedSandbox-FE.git
+# 1. Clone the repository
+git clone [https://github.com/ksi010609/SeedSandbox-FE.git](https://github.com/ksi010609/SeedSandbox-FE.git)
+
+# 2. Navigate to the project directory
 cd SeedSandbox-FE
+
+# 3. Install dependencies
 npm install
+# or
+yarn install
 ```
 
-### Environment
+### Environment Setup
 
-Create a `.env` file (Vite requires `VITE_`-prefixed variables) or update `src/constants/env.ts`:
+Create a `.env` file in the root directory of the frontend project.
 
+> **Note:** This file contains sensitive keys and should **not** be committed to version control (Git).
+
+Copy the following template and fill in your specific configuration values:
+
+```bash
+# 1. Firebase Configuration (Authentication)
+# Retrieve these values from: Firebase Console > Project Settings > General
+VITE_FIREBASE_APIKEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# 2. Backend API Endpoint
+# The URL where your Express.js server is running (e.g., http://localhost:8080 or deployed EC2 URL)
+VITE_SERVER_IP=http://localhost:8080
 ```
-VITE_API_BASE_URL=https://api.your-backend.com
-VITE_GOOGLE_GEMINI_KEY=your_gemini_api_key
-# other env variables as needed
-```
 
-### Run (development)
+### Run Locally
+
+Start the development server:
 
 ```bash
 npm run dev
-# open http://localhost:5173
 ```
 
-### Build & Preview
+Open your browser and navigate to the URL shown in the terminal (usually http://localhost:5173).
+
+### Build for Production
+
+To build the app for production deployment:
 
 ```bash
 npm run build
@@ -136,29 +255,43 @@ npm run preview
 
 ---
 
-## Backend Repository 🔗
+## Backend Repository
 
-The frontend pairs with a backend that handles portfolio persistence, analytics computation, and AI orchestration.
+The frontend interacts with a dedicated backend service that handles business logic, portfolio persistence, and AI orchestration.
 
-**Link:** https://github.com/your-org/SeedSandbox-BE  
-(Replace with the actual repository URL and configure `VITE_API_BASE_URL` accordingly.)
+> **Note:** Detailed documentation regarding **System Architecture**, **Database Schema**, and **API Specifications** can be found in the backend repository.
+
+**Repository Link:** [https://github.com/your-username/SeedSandbox-BE](https://github.com/your-username/SeedSandbox-BE)
 
 ---
 
-## Contributing 🤝
+## Contributing
 
-- Fork the repo, create a feature branch, add tests for logic changes, and open a PR with a clear description of the work.
-- Follow the code style, run linting, and include screenshots for UI changes when applicable.
+While this is primarily a personal portfolio project, I am open to code reviews and feedback to improve code quality.
+
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ---
 
 ## License & Contact
 
-- **License:** MIT
-- **Contact:** Open an issue in this repository or reach the maintainers via the org contact for collaboration or security reports.
+- **License:** Distributed under the MIT License. See `LICENSE` for more information.
+- **Contact:**
+  - **Email:** ksi010609@gmail.com
+  - **GitHub:** [https://github.com/ksi010609](https://github.com/ksi010609)
 
 ---
 
 ## Acknowledgements
 
-Thanks to the maintainers of **yahoo-finance2**, **Nivo**, **Jotai**, and **Google Gemini** for the open-source building blocks used in SeedSandbox.
+Special thanks to the open-source community for the tools that made this project possible.
+
+- **Financial Data:** [yahoo-finance2](https://github.com/gadicc/node-yahoo-finance2)
+- **Visualization:** [Nivo Charts](https://nivo.rocks/)
+- **State Management:** [Jotai](https://jotai.org/)
+- **AI Model:** [Google Gemini API](https://ai.google.dev/)
+- **Authentication:** [Firebase](https://firebase.google.com/)
