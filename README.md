@@ -9,6 +9,25 @@
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Problem Solving](#problem-solving--technical-challenges--solutions)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Setup](#environment-setup)
+  - [Run Locally](#run-locally)
+  - [Build for Production](#build-for-production)
+- [Backend Repository](#backend-repository)
+- [Contributing](#contributing)
+- [License & Contact](#license--contact)
+- [Acknowledgements](#acknowledgements)
+
+---
+
 ## Overview
 
 SeedSandbox is a web frontend that provides a safe, sandboxed environment for beginner investors to practice trading, inspect risk exposures, and learn portfolio construction without real capital. It blends interactive visual analytics and an AI-backed diagnosis layer to make financial concepts actionable and comprehensible.
