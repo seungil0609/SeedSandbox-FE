@@ -8,5 +8,4 @@ export const FIREBASE_MESSAGING_SENDER_ID = import.meta.env
 export const FIREBASE_APP_ID = import.meta.env.VITE_FIREBASE_APP_ID;
 export const FIREBASE_MEASUREMENT_ID = import.meta.env
   .VITE_FIREBASE_MEASUREMENT_ID;
-export const SERVER_IP =
-  import.meta.env.VITE_SERVER_IP || "http://localhost:8080";
+export const SERVER_IP = import.meta.env.VITE_SERVER_IP;
